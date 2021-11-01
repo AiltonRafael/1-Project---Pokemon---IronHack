@@ -3,7 +3,6 @@ export default class gameScene extends Phaser.Scene{
         super({
             key: 'gameScene'
         });
-        this.player;
         this.cursors
     }
     create(){
@@ -17,9 +16,9 @@ export default class gameScene extends Phaser.Scene{
         const belowLayer = map.createLayer("Below Player", tileset, 0, 0);
         const worldLayer = map.createLayer("World", tileset, 0, 0);
         const aboveLayer = map.createLayer("Above Player", tileset, 0, 0);
-        const arborts = map.createLayer("Arbots", tileset, 0, 0);
+        const arbortsLayer = map.createLayer("Arbots", tileset, 0, 0);
 
-        arborts.setCollisionByProperty({ collides: true });
+        arbortsLayer.setCollisionByProperty({ collides: true });
         worldLayer.setCollisionByProperty({ collides: true });
       
         // By default, everything gets depth sorted on the screen in the order we created things. Here, we
@@ -40,10 +39,10 @@ export default class gameScene extends Phaser.Scene{
       
         // Watch the player and worldLayer for collisions, for the duration of the scene:
         this.physics.add.collider(this.player, worldLayer);
-        this.physics.add.collider(this.player, arborts, summonPokemon);
+        this.physics.add.collider(this.player, arbortsLayer, summonPokemon);
 
         function summonPokemon(){
-          console.log('Polemon summoned')
+          console.log('Pokemon summoned')
         }
 
   

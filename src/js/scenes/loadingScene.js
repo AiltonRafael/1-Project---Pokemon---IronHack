@@ -7,7 +7,7 @@ export default class loadingScene extends Phaser.Scene {
 
     preload(){
         this.load.image("tiles", "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/tilesets/tuxmon-sample-32px-extruded.png");
-        this.load.tilemapTiledJSON("map", "https://raw.githubusercontent.com/AiltonRafael/phaser-3-tilemap-blog-posts/master/examples/post-1/assets/tilemaps/teste.json")
+        this.load.tilemapTiledJSON("map", "https://raw.githubusercontent.com/AiltonRafael/1-Project---Pokemon---IronHack/main/src/assets/Tilemap/map.json")
         // An atlas is a way to pack multiple images together into one texture. I'm using it to load all
         // the player animations (walking left, walking right, etc.) in one image. For more info see:
         //  https://labs.phaser.io/view.html?src=src/animation/texture%20atlas%20animation.js
