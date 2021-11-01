@@ -1,3 +1,5 @@
+import { pokedex } from '../pokedex/index.js'
+
 let BootScene = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize:
@@ -95,7 +97,7 @@ let Menu = new Phaser.Class({
         this.y = y;
     },     
     addMenuItem: function(unit) {
-        var menuItem = new MenuItem(20, this.menuItems.length * 20, unit, this.scene);
+        let menuItem = new MenuItem(20, this.menuItems.length * 20, unit, this.scene);
         this.menuItems.push(menuItem);
         this.add(menuItem);        
     },        
@@ -131,7 +133,7 @@ let Menu = new Phaser.Class({
     },
 
     clear: function() {
-        for(var i = 0; i < this.menuItems.length; i++) {
+        for(let i = 0; i < this.menuItems.length; i++) {
             this.menuItems[i].destroy();
         }
         this.menuItems.length = 0;
@@ -139,40 +141,48 @@ let Menu = new Phaser.Class({
     },
     remap: function(units) {
         this.clear();        
-        for(var i = 0; i < units.length; i++) {
-            var unit = units[i];
+        for(let i = 0; i < units.length; i++) {
+            let unit = units[i];
             this.addMenuItem(unit.type);
         }
     }
 });
 
-var HeroesMenu = new Phaser.Class({
+let HeroesMenu = new Phaser.Class({
+    constructor(){
+        let i = Math.floor(Math.random()*pokedex.length)
+        let attack1 = pokedex[i].special[0];
+        let attack2 = pokedex[i].special[1];
+        let attack3 = pokedex[i].special[2];
+        let attack4 = pokedex[i].special[3];
+    },
+
     Extends: Menu,
-    
+
     initialize:
             
     function HeroesMenu(x, y, scene) {
         Menu.call(this, x, y, scene); 
     }
 });
-var ActionsMenu = new Phaser.Class({
+let ActionsMenu = new Phaser.Class({
     Extends: Menu,
     
     initialize:
             
     function ActionsMenu(x, y, scene) {
         Menu.call(this, x, y, scene);   
-        this.addMenuItem('Attack');
-        this.addMenuItem('Attack1');
-        this.addMenuItem('Attack2');
-        this.addMenuItem('Attack3');
+        this.addMenuItem('Absorve');
+        this.addMenuItem('Agility');
+        this.addMenuItem('Confusion');
+        this.addMenuItem('Acid');
     },
     confirm: function() {
         this.scene.events.emit('SelectEnemies');        
     }
     
 });
-var EnemiesMenu = new Phaser.Class({
+let EnemiesMenu = new Phaser.Class({
     Extends: Menu,
     
     initialize:
@@ -197,19 +207,27 @@ export let BattleScene = new Phaser.Class({
         // Run UI Scene at the same time
         this.scene.launch('UIScene');
         this.cameras.main.setBackgroundColor(0xCCE9CA);
-
-       
-        // player character - mage
-        var mage = new PlayerCharacter(this, 100, 400, 'player', 4, 'Mage', 80, 8);
-        this.add.existing(mage);            
         
-        var dragonblue = new Enemy(this, 700, 100, 'dragonblue', null, 'Dragon', 50, 3);
-        this.add.existing(dragonblue);
+        
+        let i = Math.floor(Math.random()*pokedex.length)
+        let name = pokedex[i].name.english;
+        let type = pokedex[i].type[0]
+        let hp = pokedex[i].base.hp * 2
+        let damage = pokedex[i].base.attack
+
+        // player character - mage
+        // scene, x, y, texture, frame, type, hp, damage
+        let mage = new PlayerCharacter(this, 100, 400, 'player', 4, 'Mage', 80, 8);
+        this.add.existing(mage);  
+
+        
+        let pokemonEnemy = new Enemy(this, 700, 100, type, null, name, hp, damage);
+        this.add.existing(pokemonEnemy);
  
         // array with heroes
         this.heroes = [ mage ];
         // array with enemies
-        this.enemies = [ dragonblue ];
+        this.enemies = [ pokemonEnemy ];
         // array with both parties, who will attack
         this.units = this.heroes.concat(this.enemies);
         
@@ -241,7 +259,7 @@ export let BattleScene = new Phaser.Class({
                 this.events.emit('PlayerSelect', this.index);
             } else { // else if its enemy unit
                 // pick random hero
-                var r = Math.floor(Math.random() * this.heroes.length);
+                let r = Math.floor(Math.random() * this.heroes.length);
                 // call the enemy's attack function 
                 this.units[this.index].attack(this.heroes[r]);  
                 // add timer for the next turn, so will have smooth gameplay
@@ -348,11 +366,11 @@ let UIScene = new Phaser.Class({
     },
 
     remapHeroes: function() {
-        var heroes = this.battleScene.heroes;
+        let heroes = this.battleScene.heroes;
         this.heroesMenu.remap(heroes);
     },
     remapEnemies: function() {
-        var enemies = this.battleScene.enemies;
+        let enemies = this.battleScene.enemies;
         this.enemiesMenu.remap(enemies);
     },
 });
@@ -362,7 +380,7 @@ let Message = new Phaser.Class({
     initialize:
     function Message(scene, events) {
         Phaser.GameObjects.Container.call(this, scene, 160, 30);
-        var graphics = this.scene.add.graphics();
+        let graphics = this.scene.add.graphics();
         this.add(graphics);
         graphics.lineStyle(1, 0xffffff, 0.8);
         graphics.fillStyle(0x031f4c, 0.3);        
