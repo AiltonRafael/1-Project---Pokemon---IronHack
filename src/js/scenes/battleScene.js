@@ -217,15 +217,15 @@ export let BattleScene = new Phaser.Class({
 
         // player character - mage
         // scene, x, y, texture, frame, type, hp, damage
-        let mage = new PlayerCharacter(this, 100, 400, 'player', 4, 'Mage', 80, 8);
-        this.add.existing(mage);  
+        let pokemonPlayer = new PlayerCharacter(this, 100, 400, 'player', 4, 'Mage', 80, 8);
+        this.add.existing(pokemonPlayer);  
 
         
         let pokemonEnemy = new Enemy(this, 700, 100, type, null, name, hp, damage);
         this.add.existing(pokemonEnemy);
  
         // array with heroes
-        this.heroes = [ mage ];
+        this.heroes = [ pokemonPlayer ];
         // array with enemies
         this.enemies = [ pokemonEnemy ];
         // array with both parties, who will attack
