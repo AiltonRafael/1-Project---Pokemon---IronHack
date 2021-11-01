@@ -1,9 +1,19 @@
-import Express from 'express';
-import Cors from 'cors'
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
 
-const app = Express();
-app.use(Cors);
 
-app.get('/', (req, res) => {
-    res.send('')
-})
+const app = express();
+const router = express.Router();
+
+app.use(cors)
+
+router.get('/',function(req, res){
+  res.sendFile(path.join(__dirname + 'index.html'));
+});
+
+
+app.use('/', router);
+app.listen(3000);
+
+console.log('Running at Port 3000');
