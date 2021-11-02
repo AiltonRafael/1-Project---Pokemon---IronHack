@@ -8,6 +8,13 @@ let i = Math.floor(Math.random()*pokedex.length)
         let pokemonBack = pokedex[i].frame.back
         let pokemonFront = pokedex[i].frame.front
 
+        let menuAttack = {
+            'attack1': pokedex[i].special[0][0].toUpperCase() + pokedex[i].special[0].slice(1),
+            'attack2': pokedex[i].special[1][0].toUpperCase() + pokedex[i].special[1].slice(1),
+            'attack3': pokedex[i].special[2][0].toUpperCase() + pokedex[i].special[2].slice(1),
+            'attack4': pokedex[i].special[3][0].toUpperCase() + pokedex[i].special[3].slice(1),
+        }
+        
 let BootScene = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize:
@@ -17,7 +24,7 @@ let BootScene = new Phaser.Class({
     },
     preload: function ()
     {
-        this.load.image('player', pokemonBack /* { frameWidth: 16, frameHeight: 16 } */);
+        this.load.image('player', pokemonBack);
         this.load.image('enemy', pokemonFront);
     },
     create: function ()
@@ -156,11 +163,6 @@ let Menu = new Phaser.Class({
 
 let HeroesMenu = new Phaser.Class({
     constructor(){
-        let i = Math.floor(Math.random()*pokedex.length)
-        let attack1 = pokedex[i].special[0];
-        let attack2 = pokedex[i].special[1];
-        let attack3 = pokedex[i].special[2];
-        let attack4 = pokedex[i].special[3];
     },
 
     Extends: Menu,
@@ -178,10 +180,10 @@ let ActionsMenu = new Phaser.Class({
             
     function ActionsMenu(x, y, scene) {
         Menu.call(this, x, y, scene);   
-        this.addMenuItem('Absorve');
-        this.addMenuItem('Agility');
-        this.addMenuItem('Confusion');
-        this.addMenuItem('Acid');
+        this.addMenuItem(menuAttack.attack1);
+        this.addMenuItem(menuAttack.attack2);
+        this.addMenuItem(menuAttack.attack3);
+        this.addMenuItem(menuAttack.attack4);
     },
     confirm: function() {
         this.scene.events.emit('SelectEnemies');        
