@@ -218,11 +218,11 @@ export let BattleScene = new Phaser.Class({
 
         // player character - mage
         // scene, x, y, texture, frame, type, hp, damage
-        let pokemonPlayer = new PlayerCharacter(this, 100, 400, 'player', 4, name, 80, 8);
+        let pokemonPlayer = new PlayerCharacter(this, 120, 400, 'player', 4, name, hp, damage);
         this.add.existing(pokemonPlayer);  
 
         
-        let pokemonEnemy = new Enemy(this, 700, 100, 'enemy', null, name, hp, damage);
+        let pokemonEnemy = new Enemy(this, 700, 150, 'enemy', null, name, hp, damage);
         this.add.existing(pokemonEnemy);
  
         // array with heroes
@@ -327,10 +327,11 @@ let UIScene = new Phaser.Class({
 
         this.events.on("Enemy", this.onEnemy, this);
 
-        this.battleScene.nextTurn();
-
         this.message = new Message(this, this.battleScene.events);
+
         this.add.existing(this.message);
+
+        this.battleScene.nextTurn();
 
     },
 
