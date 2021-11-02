@@ -251,263 +251,515 @@ export const pokedex = [{
     "front": "https://img.pokemondb.net/sprites/home/normal/caterpie.png"
   }},
   
-       {
-         "id": 11,
-        "name": {
-          "english": "Metapod",
-          "japanese": "トランセル",
-          "chinese": "铁甲蛹",
-          "french": "Chrysacier"
-        },
-        "type": [
-          "Bug"
-        ],
-        "base": {
-          "HP": 50,
-          "Attack": 20,
-          "Defense": 55,
-          "Sp. Attack": 25,
-          "Sp. Defense": 25,
-          "Speed": 30
-        }, 
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/metapod.png",
-          "front": "https://img.pokemondb.net/sprites/sun-moon/normal/metapod.png"
-        },
-      },
-      {
-        "id": 12,
-        "name": {
-          "english": "Butterfree",
-          "japanese": "バタフリー",
-          "chinese": "巴大蝶",
-          "french": "Papilusion"
-        },
-        "type": [
-          "Bug",
-          "Flying"
-        ],
-        "base": {
-          "HP": 60,
-          "Attack": 45,
-          "Defense": 50,
-          "Sp. Attack": 90,
-          "Sp. Defense": 80,
-          "Speed": 70
-        },
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-shiny/butterfree-f.png",
-          "front": "https://img.pokemondb.net/sprites/go/shiny/butterfree-f.png"
-        },
-      },
-      {
-        "id": 13,
-        "name": {
-          "english": "Weedle",
-          "japanese": "ビードル",
-          "chinese": "独角虫",
-          "french": "Aspicot"
-        },
-        "type": [
-          "Bug",
-          "Poison"
-        ],
-        "base": {
-          "HP": 40,
-          "Attack": 35,
-          "Defense": 30,
-          "Sp. Attack": 20,
-          "Sp. Defense": 20,
-          "Speed": 50
-        }, 
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/weedle.png",
-          "front": "https://img.pokemondb.net/sprites/home/normal/weedle.png"
-        },
-      },
-      {
-        "id": 14,
-        "name": {
-          "english": "Kakuna",
-          "japanese": "コクーン",
-          "chinese": "铁壳蛹",
-          "french": "Coconfort"
-        },
-        "type": [
-          "Bug",
-          "Poison"
-        ],
-        "base": {
-          "HP": 45,
-          "Attack": 25,
-          "Defense": 50,
-          "Sp. Attack": 25,
-          "Sp. Defense": 25,
-          "Speed": 35
-        },
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/kakuna.png",
-          "front": "https://img.pokemondb.net/sprites/go/normal/kakuna.png"
-        },
-      },
-      {
-        "id": 15,
-        "name": {
-          "english": "Beedrill",
-          "japanese": "スピアー",
-          "chinese": "大针蜂",
-          "french": "Dardargnan"
-        },
-        "type": [
-          "Bug",
-          "Poison"
-        ],
-        "base": {
-          "HP": 65,
-          "Attack": 90,
-          "Defense": 40,
-          "Sp. Attack": 45,
-          "Sp. Defense": 80,
-          "Speed": 75
-        },
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/beedrill.png",
-          "front": "https://img.pokemondb.net/sprites/go/normal/beedrill.png"
-        },
-      },
-      {
-        "id": 16,
-        "name": {
-          "english": "Pidgey",
-          "japanese": "ポッポ",
-          "chinese": "波波",
-          "french": "Roucool"
-        },
-        "type": [
-          "Normal",
-          "Flying"
-        ],
-        "base": {
-          "HP": 40,
-          "Attack": 45,
-          "Defense": 40,
-          "Sp. Attack": 35,
-          "Sp. Defense": 35,
-          "Speed": 56
-        },
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/pidgey.png",
-          "front": "https://img.pokemondb.net/sprites/home/normal/pidgey.png"
-        },
-      },
-      {
-        "id": 17,
-        "name": {
-          "english": "Pidgeotto",
-          "japanese": "ピジョン",
-          "chinese": "比比鸟",
-          "french": "Roucoups"
-        },
-        "type": [
-          "Normal",
-          "Flying"
-        ],
-        "base": {
-          "HP": 63,
-          "Attack": 60,
-          "Defense": 55,
-          "Sp. Attack": 50,
-          "Sp. Defense": 50,
-          "Speed": 71
-        },
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/pidgeotto.png",
-          "front": "https://img.pokemondb.net/sprites/go/normal/pidgeotto.png"
-        },
-      },
-      {
-        "id": 18,
-        "name": {
-          "english": "Pidgeot",
-          "japanese": "ピジョット",
-          "chinese": "大比鸟",
-          "french": "Roucarnage"
-        },
-        "type": [
-          "Normal",
-          "Flying"
-        ],
-        "base": {
-          "HP": 83,
-          "Attack": 80,
-          "Defense": 75,
-          "Sp. Attack": 70,
-          "Sp. Defense": 70,
-          "Speed": 101
-        },
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/pidgeot.png",
-          "front": "https://img.pokemondb.net/sprites/go/normal/pidgeot.png"
-        },
-      },
-      {
-        "id": 19,
-        "name": {
-          "english": "Rattata",
-          "japanese": "コラッタ",
-          "chinese": "小拉达",
-          "french": "Rattata"
-        },
-        "type": [
-          "Normal"
-        ],
-        "base": {
-          "HP": 30,
-          "Attack": 56,
-          "Defense": 35,
-          "Sp. Attack": 25,
-          "Sp. Defense": 35,
-          "Speed": 72
-        },
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/rattata-f.png",
-          "front": "https://img.pokemondb.net/sprites/go/normal/rattata-f.png"
-        },
-      },
-      {
-        "id": 20,
-        "name": {
-          "english": "Raticate",
-          "japanese": "ラッタ",
-          "chinese": "拉达",
-          "french": "Rattatac"
-        },
-        "type": [
-          "Normal"
-        ],
-        "base": {
-          "HP": 55,
-          "Attack": 81,
-          "Defense": 60,
-          "Sp. Attack": 50,
-          "Sp. Defense": 70,
-          "Speed": 97
-        },
-        "special": ['absorve', 'acid', 'agility', 'confusion'],
-        "frame": {
-          "back": "https://img.pokemondb.net/sprites/platinum/back-shiny/bulbasaur.png",
-          "front": "https://img.pokemondb.net/sprites/home/shiny/bulbasaur.png"
-        },
-      },
+  {
+    "id": 11,
+  "name": {
+    "english": "Metapod",
+    "japanese": "トランセル",
+    "chinese": "铁甲蛹",
+    "french": "Chrysacier"
+  },
+  "type": [
+    "Bug"
+  ],
+  "base": {
+    "HP": 50,
+    "Attack": 20,
+    "Defense": 55,
+    "Sp. Attack": 25,
+    "Sp. Defense": 25,
+    "Speed": 30
+  }, 
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/metapod.png",
+    "front": "https://img.pokemondb.net/sprites/sun-moon/normal/metapod.png"
+  },
+},
+{
+  "id": 12,
+  "name": {
+    "english": "Butterfree",
+    "japanese": "バタフリー",
+    "chinese": "巴大蝶",
+    "french": "Papilusion"
+  },
+  "type": [
+    "Bug",
+    "Flying"
+  ],
+  "base": {
+    "HP": 60,
+    "Attack": 45,
+    "Defense": 50,
+    "Sp. Attack": 90,
+    "Sp. Defense": 80,
+    "Speed": 70
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-shiny/butterfree-f.png",
+    "front": "https://img.pokemondb.net/sprites/go/shiny/butterfree-f.png"
+  },
+},
+{
+  "id": 13,
+  "name": {
+    "english": "Weedle",
+    "japanese": "ビードル",
+    "chinese": "独角虫",
+    "french": "Aspicot"
+  },
+  "type": [
+    "Bug",
+    "Poison"
+  ],
+  "base": {
+    "HP": 40,
+    "Attack": 35,
+    "Defense": 30,
+    "Sp. Attack": 20,
+    "Sp. Defense": 20,
+    "Speed": 50
+  }, 
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/weedle.png",
+    "front": "https://img.pokemondb.net/sprites/home/normal/weedle.png"
+  },
+},
+{
+  "id": 14,
+  "name": {
+    "english": "Kakuna",
+    "japanese": "コクーン",
+    "chinese": "铁壳蛹",
+    "french": "Coconfort"
+  },
+  "type": [
+    "Bug",
+    "Poison"
+  ],
+  "base": {
+    "HP": 45,
+    "Attack": 25,
+    "Defense": 50,
+    "Sp. Attack": 25,
+    "Sp. Defense": 25,
+    "Speed": 35
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/kakuna.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/kakuna.png"
+  },
+},
+{
+  "id": 15,
+  "name": {
+    "english": "Beedrill",
+    "japanese": "スピアー",
+    "chinese": "大针蜂",
+    "french": "Dardargnan"
+  },
+  "type": [
+    "Bug",
+    "Poison"
+  ],
+  "base": {
+    "HP": 65,
+    "Attack": 90,
+    "Defense": 40,
+    "Sp. Attack": 45,
+    "Sp. Defense": 80,
+    "Speed": 75
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/beedrill.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/beedrill.png"
+  },
+},
+{
+  "id": 16,
+  "name": {
+    "english": "Pidgey",
+    "japanese": "ポッポ",
+    "chinese": "波波",
+    "french": "Roucool"
+  },
+  "type": [
+    "Normal",
+    "Flying"
+  ],
+  "base": {
+    "HP": 40,
+    "Attack": 45,
+    "Defense": 40,
+    "Sp. Attack": 35,
+    "Sp. Defense": 35,
+    "Speed": 56
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/pidgey.png",
+    "front": "https://img.pokemondb.net/sprites/home/normal/pidgey.png"
+  },
+},
+{
+  "id": 17,
+  "name": {
+    "english": "Pidgeotto",
+    "japanese": "ピジョン",
+    "chinese": "比比鸟",
+    "french": "Roucoups"
+  },
+  "type": [
+    "Normal",
+    "Flying"
+  ],
+  "base": {
+    "HP": 63,
+    "Attack": 60,
+    "Defense": 55,
+    "Sp. Attack": 50,
+    "Sp. Defense": 50,
+    "Speed": 71
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/pidgeotto.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/pidgeotto.png"
+  },
+},
+{
+  "id": 18,
+  "name": {
+    "english": "Pidgeot",
+    "japanese": "ピジョット",
+    "chinese": "大比鸟",
+    "french": "Roucarnage"
+  },
+  "type": [
+    "Normal",
+    "Flying"
+  ],
+  "base": {
+    "HP": 83,
+    "Attack": 80,
+    "Defense": 75,
+    "Sp. Attack": 70,
+    "Sp. Defense": 70,
+    "Speed": 101
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/pidgeot.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/pidgeot.png"
+  },
+},
+{
+  "id": 19,
+  "name": {
+    "english": "Rattata",
+    "japanese": "コラッタ",
+    "chinese": "小拉达",
+    "french": "Rattata"
+  },
+  "type": [
+    "Normal"
+  ],
+  "base": {
+    "HP": 30,
+    "Attack": 56,
+    "Defense": 35,
+    "Sp. Attack": 25,
+    "Sp. Defense": 35,
+    "Speed": 72
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/rattata-f.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/rattata-f.png"
+  },
+},
+{
+  "id": 20,
+  "name": {
+    "english": "Raticate",
+    "japanese": "ラッタ",
+    "chinese": "拉达",
+    "french": "Rattatac"
+  },
+  "type": [
+    "Normal"
+  ],
+  "base": {
+    "HP": 55,
+    "Attack": 81,
+    "Defense": 60,
+    "Sp. Attack": 50,
+    "Sp. Defense": 70,
+    "Speed": 97
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/raticate-f.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/raticate.png"
+  },
+},
+{
+  "id": 21,
+  "name": {
+    "english": "Spearow",
+    "japanese": "オニスズメ",
+    "chinese": "烈雀",
+    "french": "Piafabec"
+  },
+  "type": [
+    "Normal",
+    "Flying"
+  ],
+  "base": {
+    "HP": 40,
+    "Attack": 60,
+    "Defense": 30,
+    "Sp. Attack": 31,
+    "Sp. Defense": 31,
+    "Speed": 70
+  }, 
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/spearow.png",
+    "front": "https://img.pokemondb.net/sprites/sun-moon/normal/spearow.png"
+  },
+},
+{
+  "id": 22,
+  "name": {
+    "english": "Fearow",
+    "japanese": "オニドリル",
+    "chinese": "大嘴雀",
+    "french": "Rapasdepic"
+  },
+  "type": [
+    "Normal",
+    "Flying"
+  ],
+  "base": {
+    "HP": 65,
+    "Attack": 90,
+    "Defense": 65,
+    "Sp. Attack": 61,
+    "Sp. Defense": 61,
+    "Speed": 100
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/platinum/back-normal/fearow.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/fearow.png"
+  },
+},
+{
+  "id": 23,
+  "name": {
+    "english": "Ekans",
+    "japanese": "アーボ",
+    "chinese": "阿柏蛇",
+    "french": "Abo"
+  },
+  "type": [
+    "Poison"
+  ],
+  "base": {
+    "HP": 35,
+    "Attack": 60,
+    "Defense": 44,
+    "Sp. Attack": 40,
+    "Sp. Defense": 54,
+    "Speed": 55
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/platinum/back-normal/ekans.png",
+    "front": "https://img.pokemondb.net/sprites/home/normal/ekans.png"
+  },
+},
+{
+  "id": 24,
+  "name": {
+    "english": "Arbok",
+    "japanese": "アーボック",
+    "chinese": "阿柏怪",
+    "french": "Arbok"
+  },
+  "type": [
+    "Poison"
+  ],
+  "base": {
+    "HP": 60,
+    "Attack": 95,
+    "Defense": 69,
+    "Sp. Attack": 65,
+    "Sp. Defense": 79,
+    "Speed": 80
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/black-white/back-normal/arbok.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/arbok.png"
+  },
+},
+{
+  "id": 25,
+  "name": {
+    "english": "Pikachu",
+    "japanese": "ピカチュウ",
+    "chinese": "皮卡丘",
+    "french": "Pikachu"
+  },
+  "type": [
+    "Electric"
+  ],
+  "base": {
+    "HP": 35,
+    "Attack": 55,
+    "Defense": 40,
+    "Sp. Attack": 50,
+    "Sp. Defense": 50,
+    "Speed": 90
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/pikachu-f.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/pikachu.png"
+  },
+},
+{
+  "id": 26,
+  "name": {
+    "english": "Raichu",
+    "japanese": "ライチュウ",
+    "chinese": "雷丘",
+    "french": "Raichu"
+  },
+  "type": [
+    "Electric"
+  ],
+  "base": {
+    "HP": 60,
+    "Attack": 90,
+    "Defense": 55,
+    "Sp. Attack": 90,
+    "Sp. Defense": 80,
+    "Speed": 110
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/raichu.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/raichu.png"
+  },
+},
+{
+  "id": 27,
+  "name": {
+    "english": "Sandshrew",
+    "japanese": "サンド",
+    "chinese": "穿山鼠",
+    "french": "Sabelette"
+  },
+  "type": [
+    "Ground"
+  ],
+  "base": {
+    "HP": 50,
+    "Attack": 75,
+    "Defense": 85,
+    "Sp. Attack": 20,
+    "Sp. Defense": 30,
+    "Speed": 40
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/sandshrew.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/sandshrew.png"
+  },
+},
+{
+  "id": 28,
+  "name": {
+    "english": "Sandslash",
+    "japanese": "サンドパン",
+    "chinese": "穿山王",
+    "french": "Sablaireau"
+  },
+  "type": [
+    "Ground"
+  ],
+  "base": {
+    "HP": 75,
+    "Attack": 100,
+    "Defense": 110,
+    "Sp. Attack": 45,
+    "Sp. Defense": 55,
+    "Speed": 65
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/sandslash.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/sandslash.png"
+  },
+},
+{
+  "id": 29,
+  "name": {
+    "english": "Nidoran♀",
+    "japanese": "ニドラン♀",
+    "chinese": "尼多兰",
+    "french": "Nidoran♀"
+  },
+  "type": [
+    "Poison"
+  ],
+  "base": {
+    "HP": 55,
+    "Attack": 47,
+    "Defense": 52,
+    "Sp. Attack": 40,
+    "Sp. Defense": 40,
+    "Speed": 41
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/nidoran-f.png",
+    "front": "https://img.pokemondb.net/sprites/home/normal/nidoran-f.png"
+  },
+},
+{
+  "id": 30,
+  "name": {
+    "english": "Nidorina",
+    "japanese": "ニドリーナ",
+    "chinese": "尼多娜",
+    "french": "Nidorina"
+  },
+  "type": [
+    "Poison"
+  ],
+  "base": {
+    "HP": 70,
+    "Attack": 62,
+    "Defense": 67,
+    "Sp. Attack": 55,
+    "Sp. Defense": 55,
+    "Speed": 56
+  },
+  "special": ['absorve', 'acid', 'agility', 'confusion'],
+  "frame": {
+    "back": "https://img.pokemondb.net/sprites/heartgold-soulsilver/back-normal/nidorino.png",
+    "front": "https://img.pokemondb.net/sprites/go/normal/nidorino.png"
+  },
+},
 ]
 
 
