@@ -1,5 +1,13 @@
 import { pokedex } from '../pokedex/index.js'
 
+let i = Math.floor(Math.random()*pokedex.length)
+        let name = pokedex[i].name.english;
+        let type = pokedex[i].type[0]
+        let hp = pokedex[i].base.hp * 2
+        let damage = pokedex[i].base.attack
+        let pokemonBack = pokedex[i].frame.back
+        let pokemonFront = pokedex[i].frame.front
+
 let BootScene = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize:
@@ -9,8 +17,8 @@ let BootScene = new Phaser.Class({
     },
     preload: function ()
     {
-        this.load.image('player', '../../assets/images/dude.png' /* { frameWidth: 16, frameHeight: 16 } */);
-        this.load.image('dragonblue', 'https://img.pokemondb.net/sprites/go/normal/bayleef.png');
+        this.load.image('player', pokemonBack /* { frameWidth: 16, frameHeight: 16 } */);
+        this.load.image('enemy', pokemonFront);
     },
     create: function ()
     {
@@ -57,8 +65,6 @@ let PlayerCharacter = new Phaser.Class({
     initialize:
     function PlayerCharacter(scene, x, y, texture, frame, type, hp, damage) {
         Unit.call(this, scene, x, y, texture, frame, type, hp, damage);
-        // flip the image so I don't have to edit it manually
-        this.flipX = true;
         
         this.setScale(2);
     }
@@ -207,21 +213,14 @@ export let BattleScene = new Phaser.Class({
         // Run UI Scene at the same time
         this.scene.launch('UIScene');
         this.cameras.main.setBackgroundColor(0xCCE9CA);
-        
-        
-        let i = Math.floor(Math.random()*pokedex.length)
-        let name = pokedex[i].name.english;
-        let type = pokedex[i].type[0]
-        let hp = pokedex[i].base.hp * 2
-        let damage = pokedex[i].base.attack
 
         // player character - mage
         // scene, x, y, texture, frame, type, hp, damage
-        let pokemonPlayer = new PlayerCharacter(this, 100, 400, 'player', 4, 'Mage', 80, 8);
+        let pokemonPlayer = new PlayerCharacter(this, 100, 400, 'player', 4, name, 80, 8);
         this.add.existing(pokemonPlayer);  
 
         
-        let pokemonEnemy = new Enemy(this, 700, 100, type, null, name, hp, damage);
+        let pokemonEnemy = new Enemy(this, 700, 100, 'enemy', null, name, hp, damage);
         this.add.existing(pokemonEnemy);
  
         // array with heroes
