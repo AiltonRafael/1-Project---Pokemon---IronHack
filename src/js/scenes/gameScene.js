@@ -43,9 +43,9 @@ export let gameScene = new Phaser.Class({
         setOffset(0, 24);
       
         // Watch the player and worldLayer for collisions, for the duration of the scene:
-        this.physics.add.collider(this.player, worldLayer, this.onMeetEnemy);
+        this.physics.add.collider(this.player, worldLayer, this.onMeetEnemy, false, this);
         this.physics.add.collider(this.player, arbortsLayer, upper);
-        this.physics.add.overlap(this.player, arbortsLayer);
+        this.physics.add.collider(this.player, arbortsLayer, this.onMeetEnemy, false, this);
 
         this.sys.events.on('wake', this.wake, this);
 
@@ -117,8 +117,7 @@ export let gameScene = new Phaser.Class({
         });
     },
 
-    onMeetEnemy: function(player, zone) {           
-          // shake the world
+    onMeetEnemy: function(player, zone) {
       this.camera = this.cameras.main.shake(300);
       
       this.input.stopPropagation();

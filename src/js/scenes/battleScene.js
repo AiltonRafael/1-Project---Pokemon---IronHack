@@ -1,19 +1,4 @@
-import { pokedex } from '../pokedex/index.js'
-
-let i = Math.floor(Math.random()*pokedex.length)
-        let name = pokedex[i].name.english;
-        let type = pokedex[i].type[0]
-        let hp = pokedex[i].base.hp * 2
-        let damage = pokedex[i].base.attack
-        let pokemonBack = pokedex[i].frame.back
-        let pokemonFront = pokedex[i].frame.front
-
-        let menuAttack = {
-            'attack1': pokedex[i].special[0][0].toUpperCase() + pokedex[i].special[0].slice(1),
-            'attack2': pokedex[i].special[1][0].toUpperCase() + pokedex[i].special[1].slice(1),
-            'attack3': pokedex[i].special[2][0].toUpperCase() + pokedex[i].special[2].slice(1),
-            'attack4': pokedex[i].special[3][0].toUpperCase() + pokedex[i].special[3].slice(1),
-        }
+import { name, type, hp, damage, menuAttack, pokemonBack, pokemonFront} from './loadingScene.js'
         
 export let BootScene = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -23,14 +8,14 @@ export let BootScene = new Phaser.Class({
     {
         Phaser.Scene.call(this, { key: 'BootScene' });
     },
-    preload: function ()
-    {
-        this.load.image('player', pokemonBack);
-        this.load.image('enemy', pokemonFront);
+    preload: function (){
+        
     },
     create: function ()
     {
         this.scene.start('BattleScene');
+        this.add.image('player', pokemonBack);
+        this.add.image('enemy', pokemonFront);
     }
 });
 
@@ -40,12 +25,22 @@ let Unit = new Phaser.Class({
     function Unit(scene, x, y, texture, frame, type, hp, damage) {
         Phaser.GameObjects.Sprite.call(this, scene, x, y, texture, frame)
         this.type = type;
-        this.maxHp = this.hp = hp;
-        this.damage = damage;              
+        this.hp = hp;
+        this.damage = damage;
+        this.living = true;
+        this.menuItem = null;   
     },
+
+    setMenuItem: function(item) {
+        this.menuItem = item;
+    },
+
     attack: function(target) {
-        target.takeDamage(this.damage);      
-    },
+        if(target.living) {
+            target.takeDamage(this.damage);
+            this.scene.events.emit("", `${this.type} attacks ${target.type} for ${this.damage} damage`);
+        }
+    }, 
     attack1: function(target) {
         target.takeDamage(this.damage);      
     },
@@ -56,8 +51,15 @@ let Unit = new Phaser.Class({
         target.takeDamage(this.damage);      
     },
     takeDamage: function(damage) {
-        this.hp -= damage;        
-    }
+        this.hp -= damage;
+        if(this.hp <= 0) {
+            this.hp = 0;
+            this.menuItem.unitKilled();
+            this.living = false;
+            this.visible = false;   
+            this.menuItem = null;
+        }
+    },
 });
 
 let Enemy = new Phaser.Class({
@@ -334,6 +336,20 @@ export let UIScene = new Phaser.Class({
 
         this.battleScene.nextTurn();
 
+        // let timeEvent = this.time.addEvent({delay: 2000, callback: this.exitBattle, callbackScope: this});
+
+        this.sys.events.on('wake', this.wake, this);
+
+    },
+
+    wake: function() {
+        this.scene.run('UIScene');  
+        this.time.addEvent({delay: 2000, callback: this.exitBattle, callbackScope: this});        
+    },
+
+    exitBattle: function() {
+        this.scene.sleep('UIScene');
+        this.scene.switch('WorldScene');
     },
 
     onEnemy: function(index) {
@@ -379,17 +395,19 @@ export let UIScene = new Phaser.Class({
 });
 
 let Message = new Phaser.Class({
+
     Extends: Phaser.GameObjects.Container,
+
     initialize:
     function Message(scene, events) {
         Phaser.GameObjects.Container.call(this, scene, 160, 30);
-        let graphics = this.scene.add.graphics();
+        var graphics = this.scene.add.graphics();
         this.add(graphics);
         graphics.lineStyle(1, 0xffffff, 0.8);
         graphics.fillStyle(0x031f4c, 0.3);        
         graphics.strokeRect(-90, -15, 180, 30);
         graphics.fillRect(-90, -15, 180, 30);
-        this.text = new Phaser.GameObjects.Text(scene, 0, 0, "", { color: '#ffffff', align: 'center', fontSize: 13, wordWrap: { width: 160, useAdvancedWrap: true }});
+        this.text = new Phaser.GameObjects.Text(scene, 0, 0, "", { color: "#ffffff", align: "center", fontSize: 13, wordWrap: { width: 170, useAdvancedWrap: true }});
         this.add(this.text);
         this.text.setOrigin(0.5);        
         events.on("Message", this.showMessage, this);
@@ -408,18 +426,18 @@ let Message = new Phaser.Class({
     }
 });
 
-let config = {
-    type: Phaser.AUTO,
-    parent: 'content',
-    width: 800,
-    height: 600,
-    pixelArt: true,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 0 }
-        }
-    },
-    scene: [ BootScene, BattleScene, UIScene ]
-};
-let game = new Phaser.Game(config);
+// let config = {
+//     type: Phaser.AUTO,
+//     parent: 'content',
+//     width: 800,
+//     height: 600,
+//     pixelArt: true,
+//     physics: {
+//         default: 'arcade',
+//         arcade: {
+//             gravity: { y: 0 }
+//         }
+//     },
+//     scene: [ BootScene, BattleScene, UIScene ]
+// };
+// let game = new Phaser.Game(config);
