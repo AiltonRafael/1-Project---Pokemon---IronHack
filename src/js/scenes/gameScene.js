@@ -110,7 +110,7 @@ export let gameScene = new Phaser.Class({
       this.input.stopPropagation();
       this.scene.sleep('gameScene')
       this.scene.run('game', this)
-      window.location.href = 'src/battle/index.html'               
+      window.location.href = 'https://game-play-pokemon.vercel.app/'               
   },
     wake() {
         this.cursors.left.reset();
