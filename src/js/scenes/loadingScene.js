@@ -16,7 +16,7 @@ export default class loadingScene extends Phaser.Scene {
         this.load.atlas("atlas", "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/atlas/atlas.png", "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/atlas/atlas.json");
 
         this.load.on('complete', () => {
-            this.scene.start('gameScene')
+            this.scene.start('gameScene');
         })
     }
 

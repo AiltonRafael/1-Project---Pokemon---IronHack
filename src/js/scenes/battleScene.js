@@ -15,8 +15,9 @@ let i = Math.floor(Math.random()*pokedex.length)
             'attack4': pokedex[i].special[3][0].toUpperCase() + pokedex[i].special[3].slice(1),
         }
         
-let BootScene = new Phaser.Class({
+export let BootScene = new Phaser.Class({
     Extends: Phaser.Scene,
+
     initialize:
     function BootScene ()
     {
@@ -213,7 +214,7 @@ export let BattleScene = new Phaser.Class({
     create: function ()
     {
         // Run UI Scene at the same time
-        this.scene.launch('UIScene');
+        this.scene.run('UIScene');
         this.cameras.main.setBackgroundColor(0xCCE9CA);
 
         // player character - mage
@@ -233,7 +234,7 @@ export let BattleScene = new Phaser.Class({
         this.units = this.heroes.concat(this.enemies);
         
         // Run UI Scene at the same time
-        this.scene.launch('UIScene');
+        this.scene.run('UIScene');
 
         this.battleScene = this.scene.get('BattleScene');
 
@@ -270,7 +271,7 @@ export let BattleScene = new Phaser.Class({
     },
 
 });
-let UIScene = new Phaser.Class({
+export let UIScene = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize:
     function UIScene ()

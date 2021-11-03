@@ -1,11 +1,16 @@
-export default class gameScene extends Phaser.Scene{
-    constructor(){
-        super({
-            key: 'gameScene'
-        });
-        this.cursors
-    }
+export let gameScene = new Phaser.Class({
+
+  Extends: Phaser.Scene,
+
+    initialize: 
+
+    function gameScene(){
+      Phaser.Scene.call(this, {key: 'gameScene'});
+
+    },
+
     create(){
+       
         const map = this.make.tilemap({ key: "map" });
 
         // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
@@ -38,14 +43,17 @@ export default class gameScene extends Phaser.Scene{
         setOffset(0, 24);
       
         // Watch the player and worldLayer for collisions, for the duration of the scene:
-        this.physics.add.collider(this.player, worldLayer);
-        this.physics.add.collider(this.player, arbortsLayer, summonPokemon);
+        this.physics.add.collider(this.player, worldLayer, this.onMeetEnemy);
+        this.physics.add.collider(this.player, arbortsLayer, upper);
+        this.physics.add.overlap(this.player, arbortsLayer);
 
-        function summonPokemon(){
-          console.log('Pokemon summoned')
+        this.sys.events.on('wake', this.wake, this);
+
+
+        function upper(){
+          console.log('this is arbouts')
         }
 
-  
         // Create the player's walking animations from the texture atlas. These are stored in the global
         // animation manager so any sprite can access them.
         const anims = this.anims;
@@ -107,7 +115,22 @@ export default class gameScene extends Phaser.Scene{
             faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
           });
         });
-    }
+    },
+
+    onMeetEnemy: function(player, zone) {           
+          // shake the world
+      this.camera = this.cameras.main.shake(300);
+      
+      this.input.stopPropagation();
+          // start battle 
+      this.scene.switch('BattleScene');                
+  },
+    wake() {
+        this.cursors.left.reset();
+        this.cursors.right.reset();
+        this.cursors.up.reset();
+        this.cursors.down.reset();
+    },
 
     update(time, delta) {
         const speed = 175;
@@ -152,4 +175,4 @@ export default class gameScene extends Phaser.Scene{
           if (prevVelocity.y > 0) this.player.setTexture("atlas", "misa-front");
         }
     }
-}
+})
