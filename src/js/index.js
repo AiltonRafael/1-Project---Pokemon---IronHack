@@ -1,6 +1,5 @@
 import loadingScene from './scenes/loadingScene.js'
 import { gameScene } from './scenes/gameScene.js'
-import { BattleScene, BootScene, UIScene} from './scenes/battleScene.js'
 
 const config = {
     type: Phaser.AUTO,
@@ -19,9 +18,6 @@ const config = {
     scene: [
         loadingScene,
         gameScene,
-        BattleScene,
-        BootScene,
-        UIScene
         ]
     }
 
