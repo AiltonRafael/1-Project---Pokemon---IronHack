@@ -43,7 +43,7 @@ export let gameScene = new Phaser.Class({
         setOffset(0, 24);
       
         // Watch the player and worldLayer for collisions, for the duration of the scene:
-        this.physics.add.collider(this.player, worldLayer);
+        this.physics.add.collider(this.player, worldLayer, this.onMeetEnemy, false, this);
         this.physics.add.collider(this.player, arbortsLayer, upper, false, this);
         this.physics.add.collider(this.player, arbortsLayer, this.onMeetEnemy, false, this);
 
@@ -122,7 +122,7 @@ export let gameScene = new Phaser.Class({
       
       this.input.stopPropagation();
           // start battle 
-      this.scene.switch('BattleScene');                
+      window.location.href = 'src/battle/index.html'               
   },
     wake() {
         this.cursors.left.reset();
