@@ -6,5 +6,5 @@ Currently, it is halfway and with the primary objective accomplished (delivery o
 All assets were taken from https://pokemondb.net/sprites.
 All rights are reserved for Nitendo, Junichi Masuda and Pokémon Company.
 
-## Tecnoligas usadas
+## Tools used for:
 <img src="./src/assets/icons/css.png" /> <img src="./src/assets/icons/html.png" /><img src="./src/assets/icons/javascript.png" /> <img src="./src/assets/icons/linux.png" /> <img src="./src/assets/icons/nodejs.png" />
