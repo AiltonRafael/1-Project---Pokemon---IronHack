@@ -7,4 +7,8 @@ All assets were taken from https://pokemondb.net/sprites.
 All rights are reserved for Nitendo, Junichi Masuda and Pokémon Company.
 
 ## Tecnoligas usadas
-<img src="./src/assets/icons/css3-01_icon-icons.com_50918.png" />
+<img src="./src/assets/icons/css.png" />
+<img src="./src/assets/icons/html.png" />
+<img src="./src/assets/icons/javascript.png" />
+<img src="./src/assets/icons/linux.png" />
+<img src="./src/assets/icons/nodejs.png" />
