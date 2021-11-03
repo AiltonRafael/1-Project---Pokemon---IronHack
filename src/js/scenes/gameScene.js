@@ -23,7 +23,7 @@ export let gameScene = new Phaser.Class({
         const aboveLayer = map.createLayer("Above Player", tileset, 0, 0);
         const arbortsLayer = map.createLayer("Arbots", tileset, 0, 0);
 
-        arbortsLayer.setCollisionByProperty({ collides: true });
+        arbortsLayer.setCollisionByProperty(121);
         worldLayer.setCollisionByProperty({ collides: true });
       
         // By default, everything gets depth sorted on the screen in the order we created things. Here, we
@@ -43,8 +43,8 @@ export let gameScene = new Phaser.Class({
         setOffset(0, 24);
       
         // Watch the player and worldLayer for collisions, for the duration of the scene:
-        this.physics.add.collider(this.player, worldLayer, this.onMeetEnemy, false, this);
-        this.physics.add.collider(this.player, arbortsLayer, upper);
+        this.physics.add.collider(this.player, worldLayer);
+        this.physics.add.collider(this.player, arbortsLayer, upper, false, this);
         this.physics.add.collider(this.player, arbortsLayer, this.onMeetEnemy, false, this);
 
         this.sys.events.on('wake', this.wake, this);
