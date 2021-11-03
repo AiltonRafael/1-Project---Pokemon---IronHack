@@ -131,7 +131,6 @@ let Menu = new Phaser.Class({
             this.menuItemIndex = 0;
         this.menuItems[this.menuItemIndex].select();
     },
-    // select the menu as a whole and an element with index from it
     select: function(index) {
         if(!index)
             index = 0;
@@ -139,13 +138,11 @@ let Menu = new Phaser.Class({
         this.menuItemIndex = index;
         this.menuItems[this.menuItemIndex].select();
     },
-    // deselect this menu
     deselect: function() {        
         this.menuItems[this.menuItemIndex].deselect();
         this.menuItemIndex = 0;
     },
     confirm: function() {
-        // wen the player confirms his slection, do the action
     },
 
     clear: function() {
@@ -215,12 +212,10 @@ export let BattleScene = new Phaser.Class({
     },
     create: function ()
     {
-        // Run UI Scene at the same time
         this.scene.run('UIScene');
         this.cameras.main.setBackgroundColor(0xCCE9CA);
 
-        // player character - mage
-        // scene, x, y, texture, frame, type, hp, damage
+        
         let pokemonPlayer = new PlayerCharacter(this, 120, 400, 'player', 4, name, hp, damage);
         this.add.existing(pokemonPlayer);  
 
@@ -228,14 +223,10 @@ export let BattleScene = new Phaser.Class({
         let pokemonEnemy = new Enemy(this, 700, 150, 'enemy', null, name, hp, damage);
         this.add.existing(pokemonEnemy);
  
-        // array with heroes
         this.heroes = [ pokemonPlayer ];
-        // array with enemies
         this.enemies = [ pokemonEnemy ];
-        // array with both parties, who will attack
         this.units = this.heroes.concat(this.enemies);
         
-        // Run UI Scene at the same time
         this.scene.run('UIScene');
 
         this.battleScene = this.scene.get('BattleScene');
@@ -253,20 +244,15 @@ export let BattleScene = new Phaser.Class({
 
     nextTurn: function() {
         this.index++;
-        // if there are no more units, we start again from the first one
         if(this.index >= this.units.length) {
             this.index = 0;
         }
         if(this.units[this.index]) {
-            // if its player hero
             if(this.units[this.index] instanceof PlayerCharacter) {                
                 this.events.emit('PlayerSelect', this.index);
-            } else { // else if its enemy unit
-                // pick random hero
+            } else { 
                 let r = Math.floor(Math.random() * this.heroes.length);
-                // call the enemy's attack function 
                 this.units[this.index].attack(this.heroes[r]);  
-                // add timer for the next turn, so will have smooth gameplay
                 this.time.addEvent({ delay: 3000, callback: this.nextTurn, callbackScope: this });
             }
         }
@@ -301,18 +287,14 @@ export let UIScene = new Phaser.Class({
         this.actionsMenu = new ActionsMenu(300, 500, this);            
         this.enemiesMenu = new EnemiesMenu(650, 30, this);   
         
-        // the currently selected menu 
         this.currentMenu = this.actionsMenu;
         
-        // add menus to the container
         this.menus.add(this.heroesMenu);
         this.menus.add(this.actionsMenu);
         this.menus.add(this.enemiesMenu);
 
-        // the currently selected menu 
         this.currentMenu = this.actionsMenu;
 
-        // add menus to the container
         this.menus.add(this.heroesMenu);
         this.menus.add(this.actionsMenu);
         this.menus.add(this.enemiesMenu);
@@ -336,7 +318,6 @@ export let UIScene = new Phaser.Class({
 
         this.battleScene.nextTurn();
 
-        // let timeEvent = this.time.addEvent({delay: 2000, callback: this.exitBattle, callbackScope: this});
 
         this.sys.events.on('wake', this.wake, this);
 
@@ -425,19 +406,3 @@ let Message = new Phaser.Class({
         this.visible = false;
     }
 });
-
-// let config = {
-//     type: Phaser.AUTO,
-//     parent: 'content',
-//     width: 800,
-//     height: 600,
-//     pixelArt: true,
-//     physics: {
-//         default: 'arcade',
-//         arcade: {
-//             gravity: { y: 0 }
-//         }
-//     },
-//     scene: [ BootScene, BattleScene, UIScene ]
-// };
-// let game = new Phaser.Game(config);
