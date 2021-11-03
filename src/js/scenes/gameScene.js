@@ -78,31 +78,7 @@ export let gameScene = new Phaser.Class({
         camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
       
         this.cursors = this.input.keyboard.createCursorKeys();
-      
-        this.add.
-        text(16, 16, 'Arrow keys to move\nPress "D" to show hitboxes', {
-          font: "18px monospace",
-          fill: "#000000",
-          padding: { x: 20, y: 10 },
-          backgroundColor: "#ffffff" }).
-      
-        setScrollFactor(0).
-        setDepth(30);
-      
-        this.input.keyboard.once("keydown-D", event => {
-          this.physics.world.createDebugGraphic();
-      
-          const graphics = this.add.
-          graphics().
-          setAlpha(0.75).
-          setDepth(20);
-          worldLayer.renderDebug(graphics, {
-            tileColor: null, 
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), 
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
-          });
-        });
-    },
+          },
 
     onMeetEnemy: function(player, zone) {
       this.camera = this.cameras.main.shake(300);
