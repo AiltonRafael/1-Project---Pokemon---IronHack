@@ -122,7 +122,8 @@ export let gameScene = new Phaser.Class({
       
       this.input.stopPropagation();
           // start battle 
-      window.location.href = 'src/battle/index.html'               
+      this.scene.sleep('gameScene')
+      this.scene.run('game', this)
   },
     wake() {
         this.cursors.left.reset();
