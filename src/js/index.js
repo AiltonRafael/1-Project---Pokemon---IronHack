@@ -1,5 +1,8 @@
 import loadingScene from './scenes/loadingScene.js'
 import { gameScene } from './scenes/gameScene.js'
+import bagScene from './scenes/bagScene.js'
+import battleScene from './scenes/battleScene.js'
+import pokemonScene from './scenes/pokemonScene.js'
 
 const config = {
     type: Phaser.AUTO,
@@ -18,6 +21,9 @@ const config = {
     scene: [
         loadingScene,
         gameScene,
+        bagScene,
+        battleScene,
+        pokemonScene
         ]
     }
 

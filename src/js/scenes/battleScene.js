@@ -1,408 +1,759 @@
-import { name, type, hp, damage, menuAttack, pokemonBack, pokemonFront} from './loadingScene.js'
-        
-export let BootScene = new Phaser.Class({
-    Extends: Phaser.Scene,
+export default class battleScene extends Phaser.Scene {
+	constructor() {
+		super("battleScene");
+	}
 
-    initialize:
-    function BootScene ()
-    {
-        Phaser.Scene.call(this, { key: 'BootScene' });
-    },
-    preload: function (){
-        
-    },
-    create: function ()
-    {
-        this.scene.start('BattleScene');
-        this.add.image('player', pokemonBack);
-        this.add.image('enemy', pokemonFront);
-    }
-});
+	preload() {
+	}
 
-let Unit = new Phaser.Class({
-    Extends: Phaser.GameObjects.Sprite,
-    initialize:
-    function Unit(scene, x, y, texture, frame, type, hp, damage) {
-        Phaser.GameObjects.Sprite.call(this, scene, x, y, texture, frame)
-        this.type = type;
-        this.hp = hp;
-        this.damage = damage;
-        this.living = true;
-        this.menuItem = null;   
-    },
+	create(data) {
+		this.pokedexData = data.pokedexData;
+		this.pokemon_rarity_cumulative = data.pokemon_rarity_cumulative;
+		this.pokemons = data.pokemons;
+		this.moves = data.moves;
+		this.currentPokemonIndex = -1;
+		this.menuInitialized = false;
+		this.isTyping = false;
+		this.isAttacking = false;
+		this.isBattleScene = true;
+		this.ownPokemon = null;
+		this.pauseCursor = false;
+		this.numMoves = data.numMoves;
+		this.tempMoves = data.tempMoves;
+		this.typeMoves = data.typeMoves;
+		this.selectedMenu = 'Fight';
+		this.currentMenu = 'Menu';
+		this.cursors = this.input.keyboard.createCursorKeys();
+		this.yesKey = this.input.keyboard.addKey('A');
+		this.noKey = this.input.keyboard.addKey('B');
+		this.pokeballAnim();
+		this.isFromPokemonScene = false;
 
-    setMenuItem: function(item) {
-        this.menuItem = item;
-    },
+		
+		this.isUpPress = false;
+		this.isDownPress = false;
+		this.isLeftPress = false;
+		this.isRightPress = false;
+		this.isYesPress = false;
+		this.isNoPress = false;
+		this.isEnterPress = false;
 
-    attack: function(target) {
-        if(target.living) {
-            target.takeDamage(this.damage);
-            this.scene.events.emit("", `${this.type} attacks ${target.type} for ${this.damage} damage`);
+		
+
+		this.events.addListener("Up", this.up, this);
+		this.events.addListener("Down", this.down, this);
+		this.events.addListener("Left", this.left, this);
+		this.events.addListener("Right", this.right, this);
+		this.events.addListener("Yes", this.yes, this);
+		this.events.addListener("No", this.no, this);
+		this.events.addListener("Enter", this.enter, this);
+
+		var d = Math.random();
+		var cumulative = d * this.pokemon_rarity_cumulative[this.pokemon_rarity_cumulative.length - 1];
+		this.wild_pokemon_index;
+		for (let i = 0; i < 151; i++) {
+			if (this.pokemon_rarity_cumulative[i] >= cumulative) {
+				this.wild_pokemon_index = i;
+				break;
+			}
+		}
+
+		this.opponent_pokemon_types = this.pokedexData[this.wild_pokemon_index]["type"];
+		this.opponent_pokemon_moves = [];
+		this.opponent_pokemon_num_types = this.opponent_pokemon_types.length;
+		for (var i = 0; i < 4; i++) {
+			do {
+				var move_type_index = this.getRandomInt(0, this.opponent_pokemon_num_types - 1);
+				var type = this.opponent_pokemon_types[move_type_index];
+				if (!(type in this.typeMoves)) {
+					continue;
+				}
+				var num_moves = this.typeMoves[type].length;
+				var move_index = this.getRandomInt(0, num_moves - 1);
+				var move = this.typeMoves[type][move_index];
+				this.opponent_pokemon_moves.push([move["ename"], move["pp"]]);
+			}
+			while (!(type in this.typeMoves));
+		}
+		console.log(this.opponent_pokemon_moves);
+
+		this.opponentPokemon = {
+			pokemon: this.pokedexData[this.wild_pokemon_index]["name"]["english"],
+			moves: this.opponent_pokemon_moves,
+			hp: 100,
+			maxHp: 100,
+			pokedex: this.wild_pokemon_index + 1
+		};
+
+		this.numPokemon = this.pokemons.length;
+		for (let i = 0; i < this.numPokemon; i++) {
+			if (this.pokemons[i]["hp"] > 0) {
+				this.currentPokemonIndex = i;
+				break;
+			}
+		}
+
+		if (this.currentPokemonIndex == -1) {
+
+		}
+
+		var background = this.add.image(300, 300, 'battle-background');
+		var own_pokemon_bar = this.add.image(420, 410, 'battle-bar');
+		var opponent_pokemon_bar = this.add.image(175, 220, 'opponent-battle-bar');
+
+		this.own_pokemon_hp_bar = this.add.image(405, 405, "hp-bar").setOrigin(0).setScale(1.3);
+		this.own_pokemon_hp_bar.displayWidth = this.pokemons[this.currentPokemonIndex]["hp"] / this.pokemons[this.currentPokemonIndex]["maxHp"] * 147;
+		this.opponent_pokemon_hp_bar = this.add.image(139, 226, "hp-bar").setOrigin(0).setScale(1.2);
+		this.opponent_pokemon_hp_bar.displayWidth = this.opponentPokemon["hp"] / this.opponentPokemon["maxHp"] * 143;
+
+		this.own_pokemon_name_text = this.add.text(310, 367, this.pokemons[this.currentPokemonIndex]["pokemon"], { color: '#000000' }).setFontSize('25px');
+		this.opponent_pokemon_name_text = this.add.text(44, 188, this.opponentPokemon["pokemon"], { color: '#000000' }).setFontSize('25px');
+		this.own_pokemon_hp_text = this.add.text(440, 423, this.pokemons[this.currentPokemonIndex]["hp"] + "/" + this.pokemons[this.currentPokemonIndex]["maxHp"], { color: '#000000' }).setFontSize('25px');
+
+		this.graphics = this.add.graphics();
+		this.graphics.fillStyle(0xdc5436, 1);
+		this.graphics.fillRoundedRect(5, 475, 590, 115, 20);
+		this.graphics.fillStyle(0x629ba0, 1);
+		this.graphics.fillRoundedRect(25, 480, 550, 105, 20);
+
+		var pokemonName = this.pokemons[this.currentPokemonIndex]["pokemon"];
+		this.typing_4 = this.initializeTyping();
+		this.typing = this.initializeTyping();
+		this.typing.on('complete', () => {
+			this.isTyping = false;
+			this.typing.start("");
+			this.summonPokemon();
+		});
+		this.typing.start('Wild ' + this.pokedexData[this.wild_pokemon_index]["name"]["english"] + ' appeared!');
+
+		this.opponent_pokemon_sprite = this.add.image(430, 290, 'pokemon' + (this.wild_pokemon_index + 1).toString()).setScale(2.0);
+		
+		this.openingSequence();
+	}
+
+	left() {
+		this.isLeftPress = true;
+	}
+	right() {
+		this.isRightPress = true;
+	}
+	up() {
+		this.isUpPress = true;
+	}
+	down() {
+		this.isDownPress = true;
+	}
+	yes() {
+		this.isYesPress = true;
+	}
+	no() {
+		this.isNoPress = true;
+	}
+	enter() {
+		this.isEnterPress = true;
+	}
+
+	openingSequence() {
+		this.openingTop = this.add.rectangle(300, 150, 600, 300, 0x000000);
+		this.openingBottom = this.add.rectangle(300, 450, 600, 300, 0x000000);
+		this.openingBottom.angle = 180;
+		this.tweens.add({
+			targets: this.openingTop,
+			height: 0,
+			duration: 1000,
+		});
+		this.tweens.add({
+			targets: this.openingBottom,
+			height: 0,
+			duration: 1000,
+		});
+	}
+
+	pokeballAnim() {
+		this.frames = [];
+		for (var i = 0; i < 17; i++) {
+			this.frames.push(0 + i * 25);
+		}
+		this.anims.create({
+			key: 'pokeball_throw',
+			frames: this.anims.generateFrameNames('pokeball_animation',
+				{
+					prefix: '',
+					suffix: '',
+					zeroPad: 0,
+					frames: this.frames
+				}),
+			frameRate: 10,
+			repeat: 0
+		});
+	}
+
+	catchPokemon() {
+		this.setMenu(false);
+		this.pokeball2 = this.physics.add.sprite(150, 400, 'pokeball_animation');
+		this.pokeball2.anims.play('pokeball_throw');
+
+		this.pointsArray = [{x: 150, y: 400}, {x: 200, y: 300}, {x: 400, y: 100}, {x: 430, y: 290}];
+		this.bezierCurve = new Phaser.Curves.CubicBezier(this.pointsArray[0], this.pointsArray[1], this.pointsArray[2], this.pointsArray[3]);
+		var tweenObject = {
+            val: 0
         }
-    }, 
-    attack1: function(target) {
-        target.takeDamage(this.damage);      
-    },
-    attack2: function(target) {
-        target.takeDamage(this.damage);      
-    },
-    attack3: function(target) {
-        target.takeDamage(this.damage);      
-    },
-    takeDamage: function(damage) {
-        this.hp -= damage;
-        if(this.hp <= 0) {
-            this.hp = 0;
-            this.menuItem.unitKilled();
-            this.living = false;
-            this.visible = false;   
-            this.menuItem = null;
-        }
-    },
-});
+        this.tweens.add({
+            targets: tweenObject,
+            val: 1,
+            duration: 1000,
+            yoyo: false,
+            repeat: 0,
+            ease: "Sine.easeInOut",
+            callbackScope: this,
+            onUpdate: function(tween, target){
+                var position = this.bezierCurve.getPoint(target.val);
+                this.pokeball2.x = position.x;
+                this.pokeball2.y = position.y;
+			},
+			onComplete: function() {
+				this.tweens.add({
+					targets: this.pokeball2,
+					y: this.pokeball2.y - 50,
+					duration: 1000,
+					ease: function (k) {
+						return -4 * k * k + 4 * k + 0;
+					},
+					yoyo: false,
+					onComplete: function () {
+						this.opponent_pokemon_sprite.destroy();
+						this.pokeball2.anims.play('pokeball_throw');
+						if(this.pokemons.length < 6) {
+							this.pokemon_caught_text = this.opponentPokemon["pokemon"] + " has been caught!";
+						} else {
+							this.pokemon_caught_text = "Pokemon party is full";
+						}
+						this.typing_5 = this.initializeTyping();
+						this.typing_5.start(this.pokemon_caught_text);
+						this.typing_5.on("complete", () => {
+							this.pokeball2.destroy();
+							this.isTyping = false;
+							this.pauseCursor = true;
+							if (this.pokemons.length < 6) {
+								this.pokemons.push(this.opponentPokemon);
+							}
+							else {
 
-let Enemy = new Phaser.Class({
-    Extends: Unit,
-    initialize:
-    function Enemy(scene, x, y, texture, frame, type, hp, damage) {
-        Unit.call(this, scene, x, y, texture, frame, type, hp, damage);
-    }
-});
+							}
+							this.time.delayedCall(1000, function(){
+								this.pauseCursor = true;
+								this.game.scene.stop('battleScene');
+								this.game.scene.run('mainScene', this);
+							}, null, this);
+						});
+					},
+					onCompleteScope: this
+				});
+			}
+        });
+	}
 
-let PlayerCharacter = new Phaser.Class({
-    Extends: Unit,
-    initialize:
-    function PlayerCharacter(scene, x, y, texture, frame, type, hp, damage) {
-        Unit.call(this, scene, x, y, texture, frame, type, hp, damage);
-        
-        this.setScale(2);
-    }
-});
+	setOwnPokemonHP() {
+		this.own_pokemon_hp_text.setText(this.pokemons[this.currentPokemonIndex]["hp"] + "/" + this.pokemons[this.currentPokemonIndex]["maxHp"]);
+		this.own_pokemon_hp_bar.displayWidth = this.pokemons[this.currentPokemonIndex]["hp"] / this.pokemons[this.currentPokemonIndex]["maxHp"] * 147;
+	}
 
-let MenuItem = new Phaser.Class({
-    Extends: Phaser.GameObjects.Text,
-    
-    initialize:
-            
-    function MenuItem(x, y, text, scene) {
-        Phaser.GameObjects.Text.call(this, scene, x, y, text, { color: '#000000', boundsAlignH: 'center', strokeThickness: 10, align: 'center', fontSize: 15});
-    },
-    
-    select: function() {
-        this.setColor('red');
-    },
-    
-    deselect: function() {
-        this.setColor('black');
-    }
-    
-});
+	summonPokemon() {
+		this.pokeball = this.physics.add.sprite(150, 400, 'pokeball_animation');
 
-let Menu = new Phaser.Class({
-    Extends: Phaser.GameObjects.Container,
-    
-    initialize:
-            
-    function Menu(x, y, scene, heroes) {
-        Phaser.GameObjects.Container.call(this, scene, x, y);
-        this.menuItems = [];
-        this.menuItemIndex = 0;
-        this.heroes = heroes;
-        this.x = x;
-        this.y = y;
-    },     
-    addMenuItem: function(unit) {
-        let menuItem = new MenuItem(20, this.menuItems.length * 20, unit, this.scene);
-        this.menuItems.push(menuItem);
-        this.add(menuItem);        
-    },        
-    moveSelectionUp: function() {
-        this.menuItems[this.menuItemIndex].deselect();
-        this.menuItemIndex--;
-        if(this.menuItemIndex < 0)
-            this.menuItemIndex = this.menuItems.length - 1;
-        this.menuItems[this.menuItemIndex].select();
-    },
-    moveSelectionDown: function() {
-        this.menuItems[this.menuItemIndex].deselect();
-        this.menuItemIndex++;
-        if(this.menuItemIndex >= this.menuItems.length)
-            this.menuItemIndex = 0;
-        this.menuItems[this.menuItemIndex].select();
-    },
-    select: function(index) {
-        if(!index)
-            index = 0;
-        this.menuItems[this.menuItemIndex].deselect();
-        this.menuItemIndex = index;
-        this.menuItems[this.menuItemIndex].select();
-    },
-    deselect: function() {        
-        this.menuItems[this.menuItemIndex].deselect();
-        this.menuItemIndex = 0;
-    },
-    confirm: function() {
-    },
+		if(this.ownPokemon != null) {
+			this.ownPokemon.destroy();
+		}
 
-    clear: function() {
-        for(let i = 0; i < this.menuItems.length; i++) {
-            this.menuItems[i].destroy();
-        }
-        this.menuItems.length = 0;
-        this.menuItemIndex = 0;
-    },
-    remap: function(units) {
-        this.clear();        
-        for(let i = 0; i < units.length; i++) {
-            let unit = units[i];
-            this.addMenuItem(unit.type);
-        }
-    }
-});
+		if(!this.isFromPokemonScene) {
+			for(var i=0; i<this.pokemons.length; i++) {
+				if(this.pokemons[i]["hp"] > 0) {
+					this.currentPokemonIndex = i;
+					break;
+				}
+			}
+		}
 
-let HeroesMenu = new Phaser.Class({
-    constructor(){
-    },
+		if (this.isFromPokemonScene || this.ownPokemon != null) {
+			this.own_pokemon_name_text.setText(this.pokemons[this.currentPokemonIndex]["pokemon"]);
+			this.own_pokemon_hp_text.setText(this.pokemons[this.currentPokemonIndex]["hp"] + "/" + this.pokemons[this.currentPokemonIndex]["maxHp"]);
+			this.own_pokemon_hp_bar.displayWidth = this.pokemons[this.currentPokemonIndex]["hp"] / this.pokemons[this.currentPokemonIndex]["maxHp"] * 147;
+			this.isFromPokemonScene = false;
+		}
 
-    Extends: Menu,
+		this.typing_4.start("Go " + this.pokemons[this.currentPokemonIndex]["pokemon"] + "!");
+		if(this.menu) {
+			this.setMenu(false);
+			this.setPointer(false);
+		}
+		
+		this.pauseCursor = true;
+		this.pokeball.anims.play('pokeball_throw');
+		this.pokeball.on("animationcomplete", function () {
+		
+			this.ownPokemon = this.add.image(150, 390, 'pokemon-back' + this.pokemons[this.currentPokemonIndex]["pokedex"].toString()).setScale(2.0);
 
-    initialize:
-            
-    function HeroesMenu(x, y, scene) {
-        Menu.call(this, x, y, scene); 
-    }
-});
-let ActionsMenu = new Phaser.Class({
-    Extends: Menu,
-    
-    initialize:
-            
-    function ActionsMenu(x, y, scene) {
-        Menu.call(this, x, y, scene);   
-        this.addMenuItem(menuAttack.attack1);
-        this.addMenuItem(menuAttack.attack2);
-        this.addMenuItem(menuAttack.attack3);
-        this.addMenuItem(menuAttack.attack4);
-    },
-    confirm: function() {
-        this.scene.events.emit('SelectEnemies');        
-    }
-    
-});
-let EnemiesMenu = new Phaser.Class({
-    Extends: Menu,
-    
-    initialize:
-            
-    function EnemiesMenu(x, y, scene) {
-        Menu.call(this, x, y, scene);        
-    },       
-    confirm: function() {        
-        this.scene.events.emit("Enemy", this.menuItemIndex);
-    },
-});
+			this.pokeball.setVisible(false);
+			this.typing_4.start("");
+			this.initializeMenu();
+			this.initializePPMenu();
+			this.setPPMenu(false);
+			this.initializePointer();
+			this.setMenu(true);
+			this.pauseCursor = false;
+		}, this);
+	}
 
-export let BattleScene = new Phaser.Class({
-    Extends: Phaser.Scene,
-    initialize:
-    function BattleScene ()
-    {
-        Phaser.Scene.call(this, { key: 'BattleScene' });
-    },
-    create: function ()
-    {
-        this.scene.run('UIScene');
-        this.cameras.main.setBackgroundColor(0xCCE9CA);
+	closest(array, num) {
+		var i = 0;
+		var minDiff = 1000;
+		var ans;
+		for (i in array) {
+			var m = Math.abs(num - array[i]);
+			if (m < minDiff) {
+				minDiff = m;
+				ans = array[i];
+			}
+		}
+		return ans;
+	}
 
-        
-        let pokemonPlayer = new PlayerCharacter(this, 120, 400, 'player', 4, name, hp, damage);
-        this.add.existing(pokemonPlayer);  
+	initializeTyping() {
+		this.isTyping = true;
+		this.bottom_text = this.add.text(35, 490, '').setFontSize('25px');
+		return this.plugins.get('rexTextTyping').add(this.bottom_text, { speed: 50 });
+	}
 
-        
-        let pokemonEnemy = new Enemy(this, 700, 150, 'enemy', null, name, hp, damage);
-        this.add.existing(pokemonEnemy);
- 
-        this.heroes = [ pokemonPlayer ];
-        this.enemies = [ pokemonEnemy ];
-        this.units = this.heroes.concat(this.enemies);
-        
-        this.scene.run('UIScene');
+	initializeMenu() {
+		if (this.menu != null) {
+			this.menu.destroy();
+			this.fightText.destroy();
+			this.pokemonText.destroy();
+			this.bagText.destroy();
+			this.runText.destroy();
+			this.menuInitialized = true;
+		}
+		this.menu = this.add.rectangle(430, 533, 300, 105, 0xffffff);
+		this.fightText = this.add.text(320, 500, 'FIGHT', { color: '#000000' }).setFontSize('30px');
+		this.pokemonText = this.add.text(320, 540, 'POKeMON', { color: '#000000' }).setFontSize('30px');
+		this.bagText = this.add.text(480, 500, 'BAG', { color: '#000000' }).setFontSize('30px');
+		this.runText = this.add.text(480, 540, 'RUN', { color: '#000000' }).setFontSize('30px');
+		this.menuInitialized = true;
+	}
 
-        this.battleScene = this.scene.get('BattleScene');
+	initializePPMenu() {
+		if (this.moveMenu != null) {
+			this.moveMenu.destroy();
+			this.moveMenu.destroy();
+			this.ppMenu.destroy();
+			this.move_1_text.destroy();
+			this.move_2_text.destroy();
+			this.move_3_text.destroy();
+			this.move_4_text.destroy();
+			this.pp_text.destroy();
+			this.pp_count_text.destroy();
+			this.pp_type_text.destroy();
+		}
+		this.moveMenu = this.add.rectangle(220, 533, 400, 105, 0xffffff);
+		this.ppMenu = this.add.rectangle(500, 533, 160, 105, 0xffffff);
+		this.move_1_text = this.add.text(40, 500, this.pokemons[this.currentPokemonIndex]["moves"][0][0], { color: '#000000' }).setFontSize('30px');
+		this.move_2_text = this.add.text(40, 540, this.pokemons[this.currentPokemonIndex]["moves"][1][0], { color: '#000000' }).setFontSize('30px');
+		this.move_3_text = this.add.text(220, 500, this.pokemons[this.currentPokemonIndex]["moves"][2][0], { color: '#000000' }).setFontSize('30px');
+		this.move_4_text = this.add.text(220, 540, this.pokemons[this.currentPokemonIndex]["moves"][3][0], { color: '#000000' }).setFontSize('30px');
+		this.pp_text = this.add.text(430, 500, 'PP', { color: '#000000' }).setFontSize('20px');
+		this.pp_count_text = this.add.text(470, 500, this.pokemons[this.currentPokemonIndex]["moves"][0][1] + "/15", { color: '#000000' }).setFontSize('20px');
+		this.pp_type_text = this.add.text(430, 540, 'Type/Normal', { color: '#000000' }).setFontSize('20px');
+	}
 
-        this.index = -1;
+	initializePointer() {
+		if (this.menuPointer != null) {
+			this.menuPointer.destroy();
+		}
+		this.menuPointer = this.add.polygon(310, 513, [0, 0, 0, 20, 10, 10], 0x636363);
+	}
 
-    },
+	setMenu(flag) {
+		this.menu.setVisible(flag);
+		this.fightText.setVisible(flag);
+		this.pokemonText.setVisible(flag);
+		this.bagText.setVisible(flag);
+		this.runText.setVisible(flag);
+		this.menuPointer.setVisible(flag);
+		if (flag) {
+			this.setPointer(true);
+			this.menuPointer.x = 310;
+			this.menuPointer.y = 513;
+			this.currentMenu = 'Menu';
+			this.selectedMenu = 'Fight';
+		}
+	}
 
-    receivePlayerSelection: function(action, target) {
-        if(action == 'attack') {            
-            this.units[this.index].attack(this.enemies[target]);              
-        }
-        this.time.addEvent({ delay: 3000, callback: this.nextTurn, callbackScope: this });        
-    },
+	setPPMenu(flag) {
+		this.moveMenu.setVisible(flag);
+		this.ppMenu.setVisible(flag);
+		this.move_1_text.setVisible(flag);
+		this.move_2_text.setVisible(flag);
+		this.move_3_text.setVisible(flag);
+		this.move_4_text.setVisible(flag);
+		this.pp_text.setVisible(flag);
+		this.pp_count_text.setVisible(flag);
+		this.pp_type_text.setVisible(flag);
+	}
 
-    nextTurn: function() {
-        this.index++;
-        if(this.index >= this.units.length) {
-            this.index = 0;
-        }
-        if(this.units[this.index]) {
-            if(this.units[this.index] instanceof PlayerCharacter) {                
-                this.events.emit('PlayerSelect', this.index);
-            } else { 
-                let r = Math.floor(Math.random() * this.heroes.length);
-                this.units[this.index].attack(this.heroes[r]);  
-                this.time.addEvent({ delay: 3000, callback: this.nextTurn, callbackScope: this });
-            }
-        }
-    },
+	setPointer(flag) {
+		this.menuPointer.setVisible(flag);
+	}
 
-});
-export let UIScene = new Phaser.Class({
-    Extends: Phaser.Scene,
-    initialize:
-    function UIScene ()
-    {
-        Phaser.Scene.call(this, { key: 'UIScene' });
-    },
-    create: function ()
-    {    
-        
-        this.graphics = this.add.graphics();
-        const menuView = this.graphics.lineStyle(5, 0xDAB55B);
+	attack(move_no) {
+		this.setPPMenu(false);
+		this.setPointer(false);
+		if (this.pokemons[this.currentPokemonIndex]["moves"][move_no][1] == 0) {
+			this.typing_2 = this.initializeTyping();
+			this.typing_2.start("No PP left.").on('complete', () => {
+				this.setMenu(true);
+				this.isAttacking = false;
+				this.typing_2.start("");
+				this.isTyping = false;
+			});
+		} else {
+			this.move = this.pokemons[this.currentPokemonIndex]["moves"][move_no][0];
+			this.pokemons[this.currentPokemonIndex]["moves"][move_no][1] -= 1;
+			this.typing_2 = this.initializeTyping();
+			this.typing_2.start(this.pokemons[this.currentPokemonIndex]["pokemon"] + " uses " + this.move).on('complete', () => {
+				this.typing_2.start("");
 
-        this.graphics.fillStyle(0xF6F6F6, 10); 
+				this.own_pokemon_battle_tween = this.tweens.add({
+					targets: this.ownPokemon,
+					x: this.ownPokemon.x + 20,
+					y: this.ownPokemon.y - 20,
+					duration: 200,
+					repeat: 0,
+					loop: 0,
+					yoyo: true,
+					onComplete: function () {
+						this.opponentPokemon["hp"] -= this.moves[this.move]["power"];
+						if (this.opponentPokemon["hp"] < 0) {
+							this.opponentPokemon["hp"] = 0;
+						}
 
-        menuView.fillRect(0, 495, 600, 100)
-        this.graphics.strokeRect(0, 495, 600, 100);
+						this.tweens.add({
+							targets: this.opponent_pokemon_hp_bar,
+							displayWidth: this.opponentPokemon["hp"] / this.opponentPokemon["maxHp"] * 143,
+							duration: 800,
+							yoyo: false,
+							repeat: 0,
+							onComplete: function () {
 
-        const menuStatus = this.graphics.lineStyle(5, 0xDAB55B);
-        menuStatus.fillRect(600, 495, 200, 100)
-        this.graphics.strokeRect(600, 495, 200, 100);
+								if (this.opponentPokemon["hp"] <= 0) {
+									this.opponentPokemonFaint();
+								}
+								else {
+									this.opponentPokemonMove();
+								}
+							},
+							onCompleteScope: this
+						});
 
-        this.menus = this.add.container();
-                
-        this.heroesMenu = new HeroesMenu(60, 310, this);           
-        this.actionsMenu = new ActionsMenu(300, 500, this);            
-        this.enemiesMenu = new EnemiesMenu(650, 30, this);   
-        
-        this.currentMenu = this.actionsMenu;
-        
-        this.menus.add(this.heroesMenu);
-        this.menus.add(this.actionsMenu);
-        this.menus.add(this.enemiesMenu);
+					},
+					onCompleteScope: this
+				});
+			});
+		}
+	}
 
-        this.currentMenu = this.actionsMenu;
+	opponentPokemonMove() {
 
-        this.menus.add(this.heroesMenu);
-        this.menus.add(this.actionsMenu);
-        this.menus.add(this.enemiesMenu);
+		var d = this.getRandomInt(0, 3);
+		this.move = this.opponentPokemon["moves"][d][0];
+		this.typing_3 = this.initializeTyping();
+		this.typing_3.start(this.opponentPokemon["pokemon"] + " uses " + this.move).on('complete', () => {
+			this.isTyping = false;
+			this.typing_3.start("");
 
-        this.battleScene = this.scene.get("BattleScene");      
-        
-        this.remapHeroes();
-        this.remapEnemies();
+			this.tweens.add({
+				targets: this.opponent_pokemon_sprite,
+				x: this.opponent_pokemon_sprite.x - 20,
+				y: this.opponent_pokemon_sprite.y + 20,
+				duration: 200,
+				repeat: 0,
+				loop: 0,
+				yoyo: true,
+				onComplete: function () {
 
-        this.input.keyboard.on('keydown', this.onKeyInput, this);
+					if (this.moves[this.move]["power"] == null) {
+						this.moves[this.move]["power"] = 40;
+					}
+					this.pokemons[this.currentPokemonIndex]["hp"] -= this.moves[this.move]["power"];
+					if (this.pokemons[this.currentPokemonIndex]["hp"] < 0) {
+						this.pokemons[this.currentPokemonIndex]["hp"] = 0;
+					}
+					this.own_pokemon_hp_text.setText(this.pokemons[this.currentPokemonIndex]["hp"] + "/" + this.pokemons[this.currentPokemonIndex]["maxHp"]);
 
-        this.battleScene.events.on("PlayerSelect", this.onPlayerSelect, this);
+					this.tweens.add({
+						targets: this.own_pokemon_hp_bar,
+						displayWidth: this.pokemons[this.currentPokemonIndex]["hp"] / this.pokemons[this.currentPokemonIndex]["maxHp"] * 147,
+						duration: 800,
+						yoyo: false,
+						repeat: 0,
+						onComplete: function () {
 
-        this.events.on("SelectEnemies", this.onSelectEnemies, this);
+							if (this.pokemons[this.currentPokemonIndex]["hp"] <= 0) {
+								this.pokemons[this.currentPokemonIndex]["hp"] = 0;
+								this.ownPokemonFaint();
+							} else {
+								this.setMenu(true);
+								this.isAttacking = false;
+							}
+							console.log(this.pokemons[this.currentPokemonIndex]["hp"], this.opponentPokemon["hp"]);
+						},
+						onCompleteScope: this
+					});
+				},
+				onCompleteScope: this
+			});
+		});
+	}
 
-        this.events.on("Enemy", this.onEnemy, this);
+	ownPokemonFaint() {
+		this.tweens.add({
+			targets: this.ownPokemon,
+			y: this.ownPokemon.y + 100,
+			duration: 200,
+			yoyo: false,
+			onComplete: function () {
+				this.ownPokemon.setVisible(false);
+				this.own_pokemon_faint_text = this.initializeTyping();
+				this.own_pokemon_faint_text.on('complete', () => {
+					this.isTyping = false;
+					this.own_pokemon_faint_text.start("");
+				});
+				this.own_pokemon_faint_text.start(this.pokemons[this.currentPokemonIndex]["pokemon"] + " fainted!");
+				this.own_pokemon_faint_text.on("complete", () => {
+					this.isAttacking = false;
 
-        this.message = new Message(this, this.battleScene.events);
+					this.pauseCursor = true;
 
-        this.add.existing(this.message);
+					var blackout = true;
+					for(var i=0; i<this.pokemons.length; i++) {
+						if(this.pokemons[i]["hp"] > 0) {
+							blackout = false;
+							break;
+						}
+					}
 
-        this.battleScene.nextTurn();
+					if(blackout) {
+						this.typing_6 = this.initializeTyping();
+						this.typing_6.on("complete", () => {
+							this.typing_6.start("");
+							this.typing_7 = this.initializeTyping();
+							this.typing_7.on("complete", () => {
 
+								this.pauseCursor = false;
+							});
+							this.typing_7.start("You whited out.");
+						});
+						this.typing_6.start("You are out of Pokemon.");
+					}
 
-        this.sys.events.on('wake', this.wake, this);
+					else {
+						this.summonPokemon();
+					}
+				});
+			},
+			onCompleteScope: this
+		});
+	}
 
-    },
+	opponentPokemonFaint() {
+		this.tweens.add({
+			targets: this.opponent_pokemon_sprite,
+			y: this.opponent_pokemon_sprite.y + 100,
+			duration: 200,
+			yoyo: false,
+			onComplete: function () {
+				this.opponent_pokemon_sprite.setVisible(false);
+				this.opponent_pokemon_faint_text = this.initializeTyping();
+				this.opponent_pokemon_faint_text.on('complete', () => {
+					this.isTyping = false;
+					this.opponent_pokemon_faint_text.start("");
 
-    wake: function() {
-        this.scene.run('UIScene');  
-        this.time.addEvent({delay: 2000, callback: this.exitBattle, callbackScope: this});        
-    },
+					this.game.scene.stop('battleScene');
+					this.game.scene.run('mainScene');
+				});
+				this.opponent_pokemon_faint_text.start(this.opponentPokemon["pokemon"] + " fainted!");
+				this.isAttacking = false;
+			},
+			onCompleteScope: this
+		});
+	}
 
-    exitBattle: function() {
-        this.scene.sleep('UIScene');
-        this.scene.switch('WorldScene');
-    },
+	update(time, delta) {
+		if (this.menuInitialized && !this.isTyping && !this.isAttacking && !this.pauseCursor) {
+			if (Phaser.Input.Keyboard.JustDown(this.cursors.down) || this.isDownPress) {
+				if (this.currentMenu == 'Menu') {
+					if (this.selectedMenu == 'Fight') {
+						this.selectedMenu = 'Pokemon';
+						this.menuPointer.y += 40;
+					}
+					else if (this.selectedMenu == 'Bag') {
+						this.selectedMenu = 'Run';
+						this.menuPointer.y += 40;
+					}
+				}
+				else if (this.currentMenu == 'Fight') {
+					if (this.selectedMenu == 'Move 1') {
+						this.selectedMenu = 'Move 2';
+						this.menuPointer.y += 40;
+						this.pp_count_text.setText(this.pokemons[this.currentPokemonIndex]["moves"][1][1] + "/15");
+					}
+					else if (this.selectedMenu == 'Move 3') {
+						this.selectedMenu = 'Move 4';
+						this.menuPointer.y += 40;
+						this.pp_count_text.setText(this.pokemons[this.currentPokemonIndex]["moves"][3][1] + "/15");
+					}
+				}
+				this.isDownPress = false;
+			}
+			else if (Phaser.Input.Keyboard.JustDown(this.cursors.up) || this.isUpPress) {
+				if (this.currentMenu == 'Menu') {
+					if (this.selectedMenu == 'Pokemon') {
+						this.selectedMenu = 'Fight';
+						this.menuPointer.y -= 40;
+					}
+					else if (this.selectedMenu == 'Run') {
+						this.selectedMenu = 'Bag';
+						this.menuPointer.y -= 40;
+					}
+				}
+				else if (this.currentMenu == 'Fight') {
+					if (this.selectedMenu == 'Move 2') {
+						this.selectedMenu = 'Move 1';
+						this.menuPointer.y -= 40;
+						this.pp_count_text.setText(this.pokemons[this.currentPokemonIndex]["moves"][0][1] + "/15");
+					}
+					else if (this.selectedMenu == 'Move 4') {
+						this.selectedMenu = 'Move 3';
+						this.menuPointer.y -= 40;
+						this.pp_count_text.setText(this.pokemons[this.currentPokemonIndex]["moves"][2][1] + "/15");
+					}
+				}
+				this.isUpPress = false;
+			}
+			else if (Phaser.Input.Keyboard.JustDown(this.cursors.left) || this.isLeftPress) {
+				if (this.currentMenu == 'Menu') {
+					if (this.selectedMenu == 'Bag') {
+						this.selectedMenu = 'Fight';
+						this.menuPointer.x -= 160;
+					}
+					else if (this.selectedMenu == 'Run') {
+						this.selectedMenu = 'Pokemon';
+						this.menuPointer.x -= 160;
+					}
+				}
+				else if (this.currentMenu == 'Fight') {
+					if (this.selectedMenu == 'Move 3') {
+						this.selectedMenu = 'Move 1';
+						this.menuPointer.x -= 180;
+						this.pp_count_text.setText(this.pokemons[this.currentPokemonIndex]["moves"][0][1] + "/15");
+					}
+					else if (this.selectedMenu == 'Move 4') {
+						this.selectedMenu = 'Move 2';
+						this.menuPointer.x -= 180;
+						this.pp_count_text.setText(this.pokemons[this.currentPokemonIndex]["moves"][1][1] + "/15");
+					}
+				}
+				this.isLeftPress = false;
+			}
+			else if (Phaser.Input.Keyboard.JustDown(this.cursors.right) || this.isRightPress) {
+				if (this.currentMenu == 'Menu') {
+					if (this.selectedMenu == 'Fight') {
+						this.selectedMenu = 'Bag';
+						this.menuPointer.x += 160;
+					}
+					else if (this.selectedMenu == 'Pokemon') {
+						this.selectedMenu = 'Run';
+						this.menuPointer.x += 160;
+					}
+				}
+				else if (this.currentMenu == 'Fight') {
+					if (this.selectedMenu == 'Move 1') {
+						this.selectedMenu = 'Move 3';
+						this.menuPointer.x += 180;
+						this.pp_count_text.setText(this.pokemons[this.currentPokemonIndex]["moves"][2][1] + "/15");
+					}
+					else if (this.selectedMenu == 'Move 2') {
+						this.selectedMenu = 'Move 4';
+						this.menuPointer.x += 180;
+						this.pp_count_text.setText(this.pokemons[this.currentPokemonIndex]["moves"][3][1] + "/15");
+					}
+				}
+				this.isRightPress = false;
+			}
 
-    onEnemy: function(index) {
-        this.heroesMenu.deselect();
-        this.actionsMenu.deselect();
-        this.enemiesMenu.deselect();
-        this.currentMenu = null;
-        this.battleScene.receivePlayerSelection('attack', index);
-    },
+			else if (Phaser.Input.Keyboard.JustDown(this.yesKey) || this.isYesPress) {
+				switch (this.selectedMenu) {
+					case 'Fight':
+						this.setMenu(false);
+						this.setPPMenu(true);
+						this.setPointer(true);
+						this.menuPointer.x = 30;
+						this.currentMenu = 'Fight';
+						this.selectedMenu = 'Move 1';
+						this.isYesPress = false;
+						break;
+					case 'Pokemon':
+						this.game.scene.sleep("battleScene");
+						this.game.scene.run("pokemonScene", this);
+						this.isYesPress = false;
+						break;
+					case 'Bag':
+						this.game.scene.sleep("battleScene");
+						this.game.scene.run("bagScene", this);
+						this.isYesPress = false;
+						break;
+					case 'Run':
+						this.game.scene.stop('battleScene');
+						this.game.scene.run('mainScene');
+						this.isYesPress = false;
+						break;
+					case 'Move 1':
+						this.isAttacking = true;
+						this.attack(0);
+						this.isYesPress = false;
+						break;
+					case 'Move 2':
+						this.isAttacking = true;
+						this.attack(1);
+						this.isYesPress = false;
+						break;
+					case 'Move 3':
+						this.isAttacking = true;
+						this.attack(2);
+						this.isYesPress = false;
+						break;
+					case 'Move 4':
+						this.isAttacking = true;
+						this.attack(3);
+						this.isYesPress = false;
+						break;
+				}
+			}
 
-    onSelectEnemies: function() {
-        this.currentMenu = this.enemiesMenu;
-        this.enemiesMenu.select(0);
-    },
+			else if (Phaser.Input.Keyboard.JustDown(this.noKey) || this.isNoPress) {
+				switch (this.currentMenu) {
+					case 'Fight':
+						this.setPPMenu(false);
+						this.setMenu(true);
+						this.isNoPress = false;
+						break;
+				}
+			}
+		}
+	}
 
-    onPlayerSelect: function(id) {
-        this.heroesMenu.select(id);
-        this.actionsMenu.select(0);
-        this.currentMenu = this.actionsMenu;
-    },
-       
-    onKeyInput: function(event) {
-        if(this.currentMenu) {
-            if(event.code === "ArrowUp") {
-                this.currentMenu.moveSelectionUp();
-            } else if(event.code === "ArrowDown") {
-                this.currentMenu.moveSelectionDown();
-            } else if(event.code === "ArrowRight" || event.code === "Shift") {
-            } else if(event.code === "Space" || event.code === "ArrowLeft") {
-                this.currentMenu.confirm();
-            } 
-        }
-    },
-
-    remapHeroes: function() {
-        let heroes = this.battleScene.heroes;
-        this.heroesMenu.remap(heroes);
-    },
-    remapEnemies: function() {
-        let enemies = this.battleScene.enemies;
-        this.enemiesMenu.remap(enemies);
-    },
-});
-
-let Message = new Phaser.Class({
-
-    Extends: Phaser.GameObjects.Container,
-
-    initialize:
-    function Message(scene, events) {
-        Phaser.GameObjects.Container.call(this, scene, 160, 30);
-        var graphics = this.scene.add.graphics();
-        this.add(graphics);
-        graphics.lineStyle(1, 0xffffff, 0.8);
-        graphics.fillStyle(0x031f4c, 0.3);        
-        graphics.strokeRect(-90, -15, 180, 30);
-        graphics.fillRect(-90, -15, 180, 30);
-        this.text = new Phaser.GameObjects.Text(scene, 0, 0, "", { color: "#ffffff", align: "center", fontSize: 13, wordWrap: { width: 170, useAdvancedWrap: true }});
-        this.add(this.text);
-        this.text.setOrigin(0.5);        
-        events.on("Message", this.showMessage, this);
-        this.visible = false;
-    },
-    showMessage: function(text) {
-        this.text.setText(text);
-        this.visible = true;
-        if(this.hideEvent)
-            this.hideEvent.remove(false);
-        this.hideEvent = this.scene.time.addEvent({ delay: 2000, callback: this.hideMessage, callbackScope: this });
-    },
-    hideMessage: function() {
-        this.hideEvent = null;
-        this.visible = false;
-    }
-});
+	getRandomInt(min, max) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+}
