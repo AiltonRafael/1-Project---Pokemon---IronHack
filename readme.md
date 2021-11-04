@@ -8,3 +8,7 @@ All rights are reserved for Nitendo, Junichi Masuda and Pokémon Company.
 
 ## Tools used for:
 <img src="./src/assets/icons/css.png" /> <img src="./src/assets/icons/html.png" /><img src="./src/assets/icons/javascript.png" /> <img src="./src/assets/icons/linux.png" /> <img src="./src/assets/icons/nodejs.png" />
+
+## Link to Slideshow
+
+https://docs.google.com/presentation/d/1Hiek8Ogzf9_Az7L94lwcqsoVAaNQ-IWSq9DIOGe98I0/edit?usp=sharing
