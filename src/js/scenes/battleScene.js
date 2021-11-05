@@ -48,8 +48,8 @@ export default class battleScene extends Phaser.Scene {
 		this.events.addListener("No", this.no, this);
 		this.events.addListener("Enter", this.enter, this);
 
-		var d = Math.random();
-		var cumulative = d * this.pokemon_rarity_cumulative[this.pokemon_rarity_cumulative.length - 1];
+		let d = Math.random();
+		let cumulative = d * this.pokemon_rarity_cumulative[this.pokemon_rarity_cumulative.length - 1];
 		this.wild_pokemon_index;
 		for (let i = 0; i < 151; i++) {
 			if (this.pokemon_rarity_cumulative[i] >= cumulative) {
@@ -61,16 +61,16 @@ export default class battleScene extends Phaser.Scene {
 		this.opponent_pokemon_types = this.pokedexData[this.wild_pokemon_index]["type"];
 		this.opponent_pokemon_moves = [];
 		this.opponent_pokemon_num_types = this.opponent_pokemon_types.length;
-		for (var i = 0; i < 4; i++) {
+		for (let i = 0; i < 4; i++) {
 			do {
-				var move_type_index = this.getRandomInt(0, this.opponent_pokemon_num_types - 1);
-				var type = this.opponent_pokemon_types[move_type_index];
+				let move_type_index = this.getRandomInt(0, this.opponent_pokemon_num_types - 1);
+				let type = this.opponent_pokemon_types[move_type_index];
 				if (!(type in this.typeMoves)) {
 					continue;
 				}
-				var num_moves = this.typeMoves[type].length;
-				var move_index = this.getRandomInt(0, num_moves - 1);
-				var move = this.typeMoves[type][move_index];
+				let num_moves = this.typeMoves[type].length;
+				let move_index = this.getRandomInt(0, num_moves - 1);
+				let move = this.typeMoves[type][move_index];
 				this.opponent_pokemon_moves.push([move["ename"], move["pp"]]);
 			}
 			while (!(type in this.typeMoves));
@@ -97,9 +97,9 @@ export default class battleScene extends Phaser.Scene {
 
 		}
 
-		var background = this.add.image(300, 300, 'battle-background');
-		var own_pokemon_bar = this.add.image(420, 410, 'battle-bar');
-		var opponent_pokemon_bar = this.add.image(175, 220, 'opponent-battle-bar');
+		let background = this.add.image(300, 300, 'battle-background');
+		let own_pokemon_bar = this.add.image(420, 410, 'battle-bar');
+		let opponent_pokemon_bar = this.add.image(175, 220, 'opponent-battle-bar');
 
 		this.own_pokemon_hp_bar = this.add.image(405, 405, "hp-bar").setOrigin(0).setScale(1.3);
 		this.own_pokemon_hp_bar.displayWidth = this.pokemons[this.currentPokemonIndex]["hp"] / this.pokemons[this.currentPokemonIndex]["maxHp"] * 147;
@@ -116,7 +116,7 @@ export default class battleScene extends Phaser.Scene {
 		this.graphics.fillStyle(0x629ba0, 1);
 		this.graphics.fillRoundedRect(25, 480, 550, 105, 20);
 
-		var pokemonName = this.pokemons[this.currentPokemonIndex]["pokemon"];
+		let pokemonName = this.pokemons[this.currentPokemonIndex]["pokemon"];
 		this.typing_4 = this.initializeTyping();
 		this.typing = this.initializeTyping();
 		this.typing.on('complete', () => {
@@ -171,7 +171,7 @@ export default class battleScene extends Phaser.Scene {
 
 	pokeballAnim() {
 		this.frames = [];
-		for (var i = 0; i < 17; i++) {
+		for (let i = 0; i < 17; i++) {
 			this.frames.push(0 + i * 25);
 		}
 		this.anims.create({
@@ -195,7 +195,7 @@ export default class battleScene extends Phaser.Scene {
 
 		this.pointsArray = [{x: 150, y: 400}, {x: 200, y: 300}, {x: 400, y: 100}, {x: 430, y: 290}];
 		this.bezierCurve = new Phaser.Curves.CubicBezier(this.pointsArray[0], this.pointsArray[1], this.pointsArray[2], this.pointsArray[3]);
-		var tweenObject = {
+		let tweenObject = {
             val: 0
         }
         this.tweens.add({
@@ -207,7 +207,7 @@ export default class battleScene extends Phaser.Scene {
             ease: "Sine.easeInOut",
             callbackScope: this,
             onUpdate: function(tween, target){
-                var position = this.bezierCurve.getPoint(target.val);
+                let position = this.bezierCurve.getPoint(target.val);
                 this.pokeball2.x = position.x;
                 this.pokeball2.y = position.y;
 			},
@@ -266,7 +266,7 @@ export default class battleScene extends Phaser.Scene {
 		}
 
 		if(!this.isFromPokemonScene) {
-			for(var i=0; i<this.pokemons.length; i++) {
+			for(let i=0; i<this.pokemons.length; i++) {
 				if(this.pokemons[i]["hp"] > 0) {
 					this.currentPokemonIndex = i;
 					break;
@@ -305,11 +305,11 @@ export default class battleScene extends Phaser.Scene {
 	}
 
 	closest(array, num) {
-		var i = 0;
-		var minDiff = 1000;
-		var ans;
+		let i = 0;
+		let minDiff = 1000;
+		let ans;
 		for (i in array) {
-			var m = Math.abs(num - array[i]);
+			let m = Math.abs(num - array[i]);
 			if (m < minDiff) {
 				minDiff = m;
 				ans = array[i];
@@ -463,7 +463,7 @@ export default class battleScene extends Phaser.Scene {
 
 	opponentPokemonMove() {
 
-		var d = this.getRandomInt(0, 3);
+		let d = this.getRandomInt(0, 3);
 		this.move = this.opponentPokemon["moves"][d][0];
 		this.typing_3 = this.initializeTyping();
 		this.typing_3.start(this.opponentPokemon["pokemon"] + " uses " + this.move).on('complete', () => {
@@ -533,8 +533,8 @@ export default class battleScene extends Phaser.Scene {
 
 					this.pauseCursor = true;
 
-					var blackout = true;
-					for(var i=0; i<this.pokemons.length; i++) {
+					let blackout = true;
+					for(let i=0; i<this.pokemons.length; i++) {
 						if(this.pokemons[i]["hp"] > 0) {
 							blackout = false;
 							break;
@@ -751,9 +751,4 @@ export default class battleScene extends Phaser.Scene {
 		}
 	}
 
-	getRandomInt(min, max) {
-		min = Math.ceil(min);
-		max = Math.floor(max);
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
 }
