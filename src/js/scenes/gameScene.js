@@ -79,14 +79,17 @@ export let gameScene = new Phaser.Class({
       
         this.cursors = this.input.keyboard.createCursorKeys();
           },
-
+    
     onMeetEnemy: function(player, zone) {
-      this.camera = this.cameras.main.shake(300);
-      
-      this.input.stopPropagation();
-      this.scene.sleep('gameScene')
-      this.scene.run('game', this)
-      window.location.href = 'https://game-play-pokemon.vercel.app/'               
+      let dice = Math.floor(Math.random()*100)
+      if(dice === 10){
+        this.camera = this.cameras.main.shake(300);
+        this.input.stopPropagation();
+        this.scene.sleep('gameScene')
+        this.scene.run('game', this)
+        window.location.href = 'https://game-play-pokemon.vercel.app/'  
+      }
+                  
   },
     wake() {
         this.cursors.left.reset();
