@@ -1,3 +1,4 @@
+export const attackpoint =
 [
     {
         "accuracy": 100, 

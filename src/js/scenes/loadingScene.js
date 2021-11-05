@@ -1,4 +1,5 @@
 import { pokedex } from '../pokedex/index.js'
+import { attackpoint } from '../../data/moves.js'
 
 let i = Math.floor(Math.random()*pokedex.length)
         export let name = pokedex[i].name.english;
@@ -30,7 +31,8 @@ export default class loadingScene extends Phaser.Scene {
         this.load.atlas("atlas", "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/atlas/atlas.png", "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/atlas/atlas.json");
         this.load.image('player', pokemonBack)
         this.load.image('enemy', pokemonFront)
-
+        this.load.atlas('i')
+        this.load.atlas('attackpoint')
 
         this.load.on('complete', () => {
             this.scene.start('gameScene');
