@@ -377,7 +377,7 @@ export default class pokemonScene extends Phaser.Scene {
 			this.menuPointer.y += 40;
 		}
 	}
-	//teste
+
 	dehighlightAll() {
 		for (var i = 0; i < 6; i++) {
 			this.party_highlight_list[i].setVisible(false);
